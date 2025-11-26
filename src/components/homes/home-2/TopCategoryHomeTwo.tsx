@@ -115,7 +115,7 @@ const StackingCards: React.FC = () => {
         .card {
          background: transparent;
           position: sticky;
-          top: 160px;
+          top: 100px;
           border-color: transparent;
         }
 

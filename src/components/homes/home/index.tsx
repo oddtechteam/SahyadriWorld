@@ -28,12 +28,13 @@ const HomeOne = () => {
 
       <FunfactHomeFour />
 
-      <TopCategoryHomeTwo />
+     
       {/* <TopCategoryHomeOne /> */}
-      
+            <ChooseHomeOne />
 
       <MarqueeOne />
-      <ChooseHomeOne />
+
+       <TopCategoryHomeTwo />
 
       <TeamHomeOne />
       <BoardingAbout />
