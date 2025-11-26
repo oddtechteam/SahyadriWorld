@@ -1,0 +1,87 @@
+.admission-btn {
+  background: #d4c89b;
+  color: #fafafa;
+  border: none;
+  font-size: 1.2rem;
+  letter-spacing: 0.5px;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 20px rgba(255, 204, 0, 0.4);
+}
+
+.admission-btn:hover {
+  background: #ffdb4d;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(255, 204, 0, 0.6);
+}
+
+/* Simple fade animations */
+.fadeInDown {
+  animation: fadeInDown 1s ease forwards;
+}
+.fadeInUp {
+  animation: fadeInUp 1s ease forwards;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.video-dark-overlay {
+  background: rgba(238, 204, 11, 0.22); /* dark transparent layer */
+  backdrop-filter: brightness(0.6); 
+  z-index: 1;
+}
+
+.overlay {
+  z-index: 2; /* keeps text above the overlay */
+}
+
+.glow-btn {
+  background: linear-gradient(90deg, #ffd25d, #ffb300);
+  color: #f9feff;
+  border: none;
+  font-size: 1.2rem;
+  box-shadow: 0 0 20px rgba(255, 210, 93, 0.4);
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: skewX(-20deg);
+  transition: 0.5s;
+}
+
+.glow-btn:hover::after {
+  left: 200%;
+}
+
+.glow-btn:hover {
+  box-shadow: 0 0 35px rgba(255, 210, 93, 0.8);
+  transform: translateY(-3px);
+}

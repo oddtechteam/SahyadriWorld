@@ -1,0 +1,180 @@
+/* ============================
+   SCOPE EVERYTHING INSIDE WRAPPER
+   ============================ */
+.school-eco-wrapper {
+  position: relative;
+}
+
+/* ---------- Section ---------- */
+.school-eco-wrapper .eco-section {
+  padding: 50px 20px;
+  background: linear-gradient(180deg, #f9fbff 0%, #e6f8fb 100%);
+  position: relative;
+}
+
+.school-eco-wrapper .eco-title-main {
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #0c2e52;
+}
+
+.school-eco-wrapper .eco-title-main span {
+  color: #1fa6c6;
+}
+
+/* ---------- Slider ---------- */
+.school-eco-wrapper .ecosystem-slider {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 20px 10px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.school-eco-wrapper .ecosystem-slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- CARD ---------- */
+.school-eco-wrapper .ecosystem-card {
+  flex: 0 0 auto;
+  width: 88vw;
+  border-radius: 22px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  scroll-snap-align: center;
+  transition: transform 0.35s cubic-bezier(.2, .8, .2, 1),
+              box-shadow 0.35s;
+}
+
+.school-eco-wrapper .ecosystem-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+/* Hover Background Image */
+.school-eco-wrapper .overlay {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  border-radius: 22px;
+  opacity: 0;
+  filter: brightness(0.9);
+  transform: scale(1);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.school-eco-wrapper .ecosystem-card:hover .overlay {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* Gradient Overlay */
+.school-eco-wrapper .overlay-gradient {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  background: rgba(0,0,0,0.3);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.school-eco-wrapper .ecosystem-card:hover .overlay-gradient {
+  opacity: 1;
+}
+
+/* ---------- Card Content ---------- */
+.school-eco-wrapper .ecosystem-body {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.school-eco-wrapper .ecosystem-icon {
+  width: 65px;
+  height: 65px;
+  border-radius: 15px;
+  background: #1fa6c6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #fff;
+  margin: 0 auto 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px #1fa6c655;
+}
+
+.school-eco-wrapper .ecosystem-card:hover .ecosystem-icon {
+  background: #0c2e52;
+}
+
+.school-eco-wrapper .feature-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #212529;
+  transition: color 0.35s ease;
+}
+
+.school-eco-wrapper .ecosystem-card:hover .feature-title {
+  color: #fff;
+}
+
+.school-eco-wrapper .feature-desc {
+  font-size: 0.9rem;
+  color: #666;
+  transition: color 0.35s ease;
+}
+
+.school-eco-wrapper .ecosystem-card:hover .feature-desc {
+  color: #f1f1f1;
+}
+
+/* ---------- Arrows ---------- */
+.school-eco-wrapper .slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ffffff;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  font-size: 26px;
+  color: #0c2e52;
+  box-shadow: 0 8px 22px rgba(7,29,56,0.12);
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.25s ease;
+}
+
+.school-eco-wrapper .slider-arrow:hover {
+  background: #1fa6c6;
+  color: white;
+}
+
+.school-eco-wrapper .slider-arrow.left {
+  left: 10px;
+}
+
+.school-eco-wrapper .slider-arrow.right {
+  right: 10px;
+}
+
+/* ---------- Responsive ---------- */
+@media (min-width: 600px) and (max-width: 1199px) {
+  .school-eco-wrapper .ecosystem-card {
+    width: calc((100% - 60px) / 3);
+  }
+}
+
+@media (min-width: 1200px) {
+  .school-eco-wrapper .ecosystem-card {
+    width: calc((100% - 80px) / 4);
+  }
+}

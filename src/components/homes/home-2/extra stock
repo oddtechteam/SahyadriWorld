@@ -1,0 +1,1862 @@
+// import { useState, useEffect, useRef } from "react";
+// import gsap from "gsap";
+// import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// gsap.registerPlugin(ScrollTrigger);
+
+// const InfrastructureSection = () => {
+//   const [activeIndex, setActiveIndex] = useState<number | null>(0);
+//   const sectionRef = useRef(null);
+
+//   useEffect(() => {
+//     gsap.fromTo(
+//       ".infra-card",
+//       { opacity: 0, y: 80 },
+//       {
+//         opacity: 1,
+//         y: 0,
+//         duration: 1,
+//         stagger: 0.25,
+//         ease: "power3.out",
+//         scrollTrigger: {
+//           trigger: sectionRef.current,
+//           start: "top 80%",
+//         },
+//       }
+//     );
+//   }, []);
+
+//   const items = [
+//     {
+//       title: "World-Class Learning Spaces",
+//       desc: "Smart classrooms, digital library, and innovation labs equipped with the latest technology to create engaging and future-ready learning environments.",
+//       img: "/assets/img/sah/school.jpeg",
+//       icon: "flaticon-graduation-cap",
+//       gradient: "linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%)",
+//     },
+//     {
+//       title: "Innovation & Design Thinking Labs",
+//       desc: "Hands-on learning spaces for STEM, Robotics, 3D Printing, AI, and Coding Studios that spark creativity, problem-solving, and innovation.",
+//       img: "/assets/img/sah/sci.jpeg",
+//       icon: "flaticon-science",
+//       gradient: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
+//     },
+//     {
+//       title: "State-of-the-Art Sports Complex",
+//       desc: "Badminton, Skating, Turf Grounds, and Indoor Sports Arenas built to encourage teamwork, discipline, and athletic excellence.",
+//       img: "/assets/img/sah/foot.jpeg",
+//       icon: "flaticon-football",
+//       gradient: "linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%)",
+//     },
+//     {
+//       title: "Dedicated Arts & Performance Studios",
+//       desc: "Spaces for Theatre, Music, Dance, and Fine Arts where students express creativity, build confidence, and nurture artistic talent.",
+//       img: "/assets/img/sah/arch.jpeg",
+//       icon: "flaticon-music",
+//       gradient: "linear-gradient(135deg, #f5e0ff 0%, #faf5ff 100%)",
+//     },
+//     {
+//       title: "Wellness & Mindfulness Hub",
+//       desc: "Counseling rooms, meditation zones, and holistic well-being programs designed to support emotional balance and student happiness.",
+//       img: "/assets/img/sah/Gymn.jpeg",
+//       icon: "flaticon-lotus",
+//       gradient: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)",
+//     },
+//     {
+//       title: "Green & Sustainable Campus",
+//       desc: "Eco-friendly infrastructure featuring solar power, rainwater harvesting, and organic gardens  fostering environmental awareness and sustainable living.",
+//       img: "/assets/img/sah/extra.jpeg",
+//       icon: "flaticon-leaf",
+//       gradient: "linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%)",
+//     },
+//   ];
+
+//   return (
+//     <section
+//       ref={sectionRef}
+//       className="infrastructure-section section-padding"
+//       style={{
+//         background: "linear-gradient(135deg, #f4f8ff 0%, #eaf3ff 100%)",
+//         padding: "100px 0",
+//         position: "relative",
+//       }}
+//     >
+//       <div className="container">
+//         {/* Header */}
+//         <div className="text-center mb-5">
+//           <h6
+//             style={{
+//               color: "#0066cc",
+//               letterSpacing: "1px",
+//               textTransform: "uppercase",
+//               fontWeight: 600,
+//             }}
+//           >
+//             Infrastructure & Facilities
+//           </h6>
+//           <h2
+//             style={{
+//               fontWeight: 700,
+//               color: "#0b2b5c",
+//             }}
+//           >
+//             A Campus Built for Future-Ready Learning
+//             {/* A Future Ready Campus Designed for Excellence */}
+
+//           </h2>
+//           <p
+//             className="mt-3"
+//             style={{
+//               color: "#004080",
+//               maxWidth: "700px",
+//               margin: "0 auto",
+//             }}
+//           >
+//             Our campus combines technology, innovation, wellness, and sustainability
+//              creating an inspiring space for students to learn, grow, and thrive.
+//           </p>
+//         </div>
+
+//         {/* Facility Cards */}
+//         <div className="infra-cards-wrapper d-flex flex-column gap-4">
+//           {items.map((item, i) => (
+//             <div
+//               key={i}
+//               className={`infra-card p-4 d-flex flex-column flex-lg-row align-items-center justify-content-between ${
+//                 activeIndex === i ? "active" : ""
+//               }`}
+//               style={{
+//                 borderRadius: "20px",
+//                 background: item.gradient,
+//                 boxShadow:
+//                   activeIndex === i
+//                     ? "0 10px 25px rgba(0,102,204,0.25)"
+//                     : "0 6px 15px rgba(0,0,0,0.08)",
+//                 cursor: "pointer",
+//                 overflow: "hidden",
+//                 transition: "all 0.6s ease",
+//                 transform: activeIndex === i ? "scale(1.02)" : "scale(1)",
+//                 height: activeIndex === i ? "auto" : "95px",
+//               }}
+//               onClick={() =>
+//                 setActiveIndex(activeIndex === i ? null : i)
+//               }
+//             >
+//               {/* Header Row */}
+//               <div
+//                 className="d-flex align-items-center justify-content-between w-100"
+//                 style={{ gap: "20px" }}
+//               >
+//                 <h4
+//                   style={{
+//                     color: "#0b2b5c",
+//                     fontWeight: 700,
+//                     marginBottom: 0,
+//                   }}
+//                 >
+//                   {item.title}
+//                 </h4>
+//                 <i
+//                   className={item.icon}
+//                   style={{
+//                     fontSize: "28px",
+//                     color: "#0077cc",
+//                     transition: "transform 0.3s ease, color 0.3s ease",
+//                     transform:
+//                       activeIndex === i ? "rotate(15deg)" : "rotate(0)",
+//                     // color: activeIndex === i ? "#004b99" : "#0077cc",
+//                   }}
+//                 ></i>
+//               </div>
+
+//               {/* Expandable Content */}
+//               <div
+//                 className="content d-flex flex-column flex-lg-row align-items-center justify-content-between mt-3"
+//                 style={{
+//                   maxHeight: activeIndex === i ? "1000px" : "0",
+//                   opacity: activeIndex === i ? 1 : 0,
+//                   overflow: "hidden",
+//                   transition: "all 0.6s ease",
+//                 }}
+//               >
+//                 {/* Image */}
+//                 <div
+//                   className="image mt-3 mt-lg-0"
+//                   style={{
+//                     flex: "1 1 45%",
+//                     borderRadius: "15px",
+//                     overflow: "hidden",
+//                     boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
+//                   }}
+//                 >
+//                   <img
+//                     src={item.img}
+//                     alt={item.title}
+//                     style={{
+//                       width: "100%",
+//                       borderRadius: "15px",
+//                       transition: "transform 0.6s ease",
+//                     }}
+//                     className="hover-scale"
+//                   />
+//                 </div>
+
+//                 {/* Text */}
+//                 <div
+//                   className="text mt-4 mt-lg-0 ps-lg-4"
+//                   style={{ flex: "1 1 50%", textAlign: "left" }}
+//                 >
+//                   <p
+//                     style={{
+//                       color: "#003b80",
+//                       lineHeight: 1.6,
+//                       fontSize: "16px",
+//                     }}
+//                   >
+//                     {item.desc}
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Inline Styling */}
+//       <style>{`
+//         .hover-scale:hover {
+//           transform: scale(1.05);
+//         }
+//         .infra-card:hover {
+//           box-shadow: 0 12px 30px rgba(0, 102, 204, 0.25);
+//         }
+//       `}</style>
+//     </section>
+//   );
+// };
+
+// export default InfrastructureSection;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { useState, useEffect, useRef } from "react";
+// import gsap from "gsap";
+// import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// gsap.registerPlugin(ScrollTrigger);
+
+// const InfrastructureSection = () => {
+//   const [activeIndex, setActiveIndex] = useState<number | null>(0);
+//   const sectionRef = useRef(null);
+//   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+//   useEffect(() => {
+//     gsap.fromTo(
+//       ".infra-card",
+//       { opacity: 0, y: 80 },
+//       {
+//         opacity: 1,
+//         y: 0,
+//         duration: 1,
+//         stagger: 0.25,
+//         ease: "power3.out",
+//         scrollTrigger: {
+//           trigger: sectionRef.current,
+//           start: "top 80%",
+//         },
+//       }
+//     );
+//   }, []);
+
+//   // Scroll to card when opened on mobile
+//   useEffect(() => {
+//     if (activeIndex !== null && window.innerWidth <= 768) {
+//       const cardElement = cardRefs.current[activeIndex];
+//       if (cardElement) {
+//         // Add a small delay to ensure the card has expanded before scrolling
+//         setTimeout(() => {
+//           cardElement.scrollIntoView({ 
+//             behavior: 'smooth', 
+//             block: 'center',
+//             inline: 'nearest'
+//           });
+//         }, 100);
+//       }
+//     }
+//   }, [activeIndex]);
+
+//   const items = [
+//     {
+//       title: "World-Class Learning Spaces",
+//       desc: "Smart classrooms, digital library, and innovation labs equipped with the latest technology to create engaging and future-ready learning environments.",
+//       img: "/assets/img/sah/school_11zon.webp",
+//       icon: "flaticon-graduation-cap",
+//       gradient: "linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%)",
+//     },
+//     {
+//       title: "Innovation & Design Thinking Labs",
+//       desc: "Hands-on learning spaces for STEM, Robotics, 3D Printing, AI, and Coding Studios that spark creativity, problem-solving, and innovation.",
+//       img: "/assets/img/sah/DSC08830_11zon.webp",
+//       icon: "flaticon-science",
+//       gradient: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
+//     },
+//     {
+//       title: "State-of-the-Art Sports Complex",
+//       desc: "Badminton, Skating, Turf Grounds, and Indoor Sports Arenas built to encourage teamwork, discipline, and athletic excellence.",
+//       img: "/assets/img/sah/foot_11zon.webp",
+//       icon: "flaticon-football",
+//       gradient: "linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%)",
+//     },
+//     {
+//       title: "Dedicated Arts & Performance Studios",
+//       desc: "Spaces for Theatre, Music, Dance, and Fine Arts where students express creativity, build confidence, and nurture artistic talent.",
+//       img: "/assets/img/sah/extra_11zon.webp",
+//       icon: "flaticon-music",
+//       gradient: "linear-gradient(135deg, #f5e0ff 0%, #faf5ff 100%)",
+//     },
+//     {
+//       title: "Wellness & Mindfulness Hub",
+//       desc: "Counseling rooms, meditation zones, and holistic well-being programs designed to support emotional balance and student happiness.",
+//       img: "/assets/img/sah/Gymn_11zon.webp",
+//       icon: "flaticon-lotus",
+//       gradient: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)",
+//     },
+//     {
+//       title: "Green & Sustainable Campus",
+//       desc: "Eco-friendly infrastructure featuring solar power, rainwater harvesting, and organic gardens  fostering environmental awareness and sustainable living.",
+//       img: "/assets/img/sah/DSC09168_11zon.webp",
+//       icon: "flaticon-leaf",
+//       gradient: "linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%)",
+//     },
+//   ];
+
+//   const handleCardClick = (index: number) => {
+//     if (activeIndex === index) {
+//       setActiveIndex(null);
+//     } else {
+//       setActiveIndex(index);
+//     }
+//   };
+
+//   return (
+//     <section
+//       ref={sectionRef}
+//       className="infrastructure-section section-padding"
+//       style={{
+//         background: "linear-gradient(135deg, #f0a92f 0%, #e0d8cbff 100%)",
+//         padding: "50px 0",
+//         position: "relative",
+//       }}
+//     >
+//       <div className="container">
+//         {/* Header */}
+//         <div className="text-center mb-5">
+//           <h3
+//             style={{
+//               color: "#ffffff",
+//               letterSpacing: "1px",
+//               textTransform: "uppercase",
+//               fontWeight: 600,
+//               marginBottom: "10px",
+//             }}
+//           >
+//             Infrastructure & Facilities
+//           </h3>
+//           <h2
+//             style={{
+//               fontWeight: 700,
+//               color: "#0b2b5c",
+//             }}
+//           >
+//             {/* A Campus Built for Future-Ready Learning */}
+//             A World-Class Campus Designed to Inspire and Empower Students
+//           </h2>
+//           <p
+//             className="mt-3"
+//             style={{
+//               color: "#004080",
+//               maxWidth: "700px",
+//               margin: "0 auto",
+//             }}
+//           >
+//             {/* Our campus combines technology, innovation, wellness, and sustainability
+//             creating an inspiring space for students to learn, grow, and thrive. */}
+
+//             At Sahyadri World School, we combine innovation, knowledge, and care 
+//             helping every student discover their potential and rise to success.
+//           </p>
+//         </div>
+
+//         {/* Facility Cards */}
+//         <div className="infra-cards-wrapper d-flex flex-column gap-4">
+//           {items.map((item, i) => (
+//             <div
+//               key={i}
+//               ref={el => cardRefs.current[i] = el}
+//               className={`infra-card p-4 d-flex flex-column flex-lg-row align-items-center justify-content-between ${
+//                 activeIndex === i ? "active" : ""
+//               }`}
+//               style={{
+//                 borderRadius: "20px",
+//                 background: item.gradient,
+//                 boxShadow:
+//                   activeIndex === i
+//                     ? "0 10px 25px rgba(0,102,204,0.25)"
+//                     : "0 6px 15px rgba(0,0,0,0.08)",
+//                 cursor: "pointer",
+//                 overflow: "hidden",
+//                 transition: "all 0.6s ease",
+//                 transform: activeIndex === i ? "scale(1.02)" : "scale(1)",
+//                 height: activeIndex === i ? "auto" : "95px",
+//                 minHeight: "95px",
+//               }}
+//               onClick={() => handleCardClick(i)}
+//             >
+//               {/* Header Row */}
+//               <div
+//                 className="d-flex align-items-center justify-content-between w-100"
+//                 style={{ gap: "20px" }}
+//               >
+//                 <h4
+//                   style={{
+//                     color: "#0b2b5c",
+//                     fontWeight: 700,
+//                     marginBottom: 0,
+//                     flex: 1,
+//                     textAlign: "left",
+//                   }}
+//                 >
+//                   {item.title}
+//                 </h4>
+//                 <i
+//                   className={item.icon}
+//                   style={{
+//                     fontSize: "28px",
+//                     color: "#0077cc",
+//                     transition: "transform 0.3s ease, color 0.3s ease",
+//                     transform:
+//                       activeIndex === i ? "rotate(15deg)" : "rotate(0)",
+//                     flexShrink: 0,
+//                   }}
+//                 ></i>
+//               </div>
+
+//               {/* Expandable Content */}
+//               <div
+//                 className="content d-flex flex-column flex-lg-row align-items-center justify-content-between"
+//                 style={{
+//                   maxHeight: activeIndex === i ? "1000px" : "0",
+//                   opacity: activeIndex === i ? 1 : 0,
+//                   overflow: "hidden",
+//                   transition: "all 0.6s ease",
+//                   width: "100%",
+//                 }}
+//               >
+//                 {/* Image */}
+//                 {/* <div
+//                   className="image mt-4"
+//                   style={{
+//                     flex: "1 1 45%",
+//                     borderRadius: "15px",
+//                     overflow: "hidden",
+//                     boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
+//                   }}
+//                 >
+//                   <img
+//                     src={item.img}
+//                     alt={item.title}
+//                     style={{
+//                       width: "100%",
+//                       height: "200px",
+//                       objectFit: "cover",
+//                       borderRadius: "15px",
+//                       transition: "transform 0.6s ease",
+//                     }}
+//                     className="hover-scale"
+//                   />
+//                 </div> */}
+
+//                               <div
+//                   className="image mt-3 mt-lg-0 d-flex justify-content-center align-items-center w-100"
+//                   style={{
+//                     flex: "1 1 45%",
+//                     borderRadius: "15px",
+//                     overflow: "hidden",
+//                     boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
+                    
+//                   }}
+//                 >
+//                   <img
+//                     src={item.img}
+//                     alt={item.title}
+//                     style={{
+//                       width: "100%",
+//                       height: "280px",
+//                       borderRadius: "15px",
+//                       transition: "transform 0.6s ease",
+//                       // ensures centering fallback
+//       display: "block",
+//                     }}
+//                     className="hover-scale"
+//                   />
+//                 </div>
+
+//                 {/* Text */}
+//                 <div
+//                   className="text mt-4 ps-lg-4"
+//                   style={{ 
+//                     flex: "1 1 50%", 
+//                     textAlign: "left",
+//                     width: "100%",
+//                   }}
+//                 >
+//                   <p
+//                     style={{
+//                       color: "#003b80",
+//                       lineHeight: 1.6,
+//                       fontSize: "16px",
+//                       marginBottom: 0,
+//                     }}
+//                   >
+//                     {item.desc}
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Inline Styling */}
+//       <style>{`
+//         .hover-scale:hover {
+//           transform: scale(1.05);
+//         }
+//         .infra-card:hover {
+//           box-shadow: 0 12px 30px rgba(0, 102, 204, 0.25);
+//         }
+
+//         /* ✅ Enhanced Responsive CSS for Mobile Screens */
+//         @media (max-width: 768px) {
+//           .infrastructure-section {
+//             padding: 60px 15px !important;
+//             overflow-x: hidden;
+//           }
+
+//           .infrastructure-section h2 {
+//             font-size: 22px !important;
+//             line-height: 1.3;
+//           }
+
+//           .infrastructure-section p {
+//             font-size: 14px !important;
+//             line-height: 1.6;
+//           }
+
+//           .infra-cards-wrapper {
+//             gap: 16px !important;
+//           }
+
+//           .infra-card {
+//             height: auto !important;
+//             min-height: 80px !important;
+//             padding: 16px !important;
+//             text-align: center !important;
+//             margin-bottom: 0 !important;
+//           }
+
+//           .infra-card.active {
+//             position: relative;
+//             z-index: 10;
+//             margin: 8px 0;
+//           }
+
+//           .infra-card h4 {
+//             font-size: 15px !important;
+//             line-height: 1.3;
+//             text-align: left;
+//             padding-right: 10px;
+//           }
+
+//           .infra-card i {
+//             font-size: 22px !important;
+//             flex-shrink: 0;
+//           }
+
+//           .infra-card .content {
+//             flex-direction: column !important;
+//             text-align: center !important;
+//             margin-top: 12px !important;
+//           }
+
+//           .infra-card .image {
+//             width: 100% !important;
+//             margin-bottom: 12px;
+//           }
+
+//           .infra-card img {
+//             width: 100% !important;
+//             height: 180px !important;
+//             border-radius: 12px !important;
+//           }
+
+//           .infra-card .text {
+//             padding-left: 0 !important;
+//             margin-top: 0 !important;
+//             width: 100% !important;
+//           }
+
+//           .infra-card .text p {
+//             font-size: 14px !important;
+//             line-height: 1.5;
+//             text-align: left;
+//           }
+
+//           /* Ensure smooth scrolling behavior */
+//           html {
+//             scroll-behavior: smooth;
+//           }
+//         }
+
+//         /* Extra small devices */
+//         @media (max-width: 480px) {
+//           .infra-card {
+//             padding: 14px !important;
+//             min-height: 75px !important;
+//           }
+
+//           .infra-card h4 {
+//             font-size: 14px !important;
+//           }
+
+//           .infra-card i {
+//             font-size: 20px !important;
+//           }
+
+//           .infra-card img {
+//             height: 160px !important;
+//           }
+
+//           .infra-card .text p {
+//             font-size: 13px !important;
+//           }
+//         }
+
+//         /* Prevent body scroll when card is active on mobile */
+//         @media (max-width: 768px) {
+//           body.no-scroll {
+//             overflow: hidden;
+//           }
+//         }
+//       `}</style>
+//     </section>
+//   );
+// };
+
+// export default InfrastructureSection;
+
+
+
+
+
+
+
+
+
+// import { useState, useEffect, useRef } from "react";
+// import gsap from "gsap";
+// import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// gsap.registerPlugin(ScrollTrigger);
+
+// const InfrastructureSection = () => {
+//   // Track currently active card (only one open at a time)
+//   const [activeIndex, setActiveIndex] = useState<number>(0);
+//   const sectionRef = useRef(null);
+
+//   const items = [
+//     {
+//       title: "World-Class Learning Spaces",
+//       desc: "Smart classrooms, digital library, and innovation labs equipped with the latest technology to create engaging and future-ready learning environments.",
+//       img: "/assets/img/sah/school.jpeg",
+//       icon: "flaticon-graduation-cap",
+//       gradient: "linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%)",
+//     },
+//     {
+//       title: "Innovation & Design Thinking Labs",
+//       desc: "Hands-on learning spaces for STEM, Robotics, 3D Printing, AI, and Coding Studios that spark creativity, problem-solving, and innovation.",
+//       img: "/assets/img/sah/sci.jpeg",
+//       icon: "flaticon-science",
+//       gradient: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
+//     },
+//     {
+//       title: "State-of-the-Art Sports Complex",
+//       desc: "Badminton, Skating, Turf Grounds, and Indoor Sports Arenas built to encourage teamwork, discipline, and athletic excellence.",
+//       img: "/assets/img/sah/foot.jpeg",
+//       icon: "flaticon-football",
+//       gradient: "linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%)",
+//     },
+//     {
+//       title: "Dedicated Arts & Performance Studios",
+//       desc: "Spaces for Theatre, Music, Dance, and Fine Arts where students express creativity, build confidence, and nurture artistic talent.",
+//       img: "/assets/img/sah/arch.jpeg",
+//       icon: "flaticon-music",
+//       gradient: "linear-gradient(135deg, #f5e0ff 0%, #faf5ff 100%)",
+//     },
+//     {
+//       title: "Wellness & Mindfulness Hub",
+//       desc: "Counseling rooms, meditation zones, and holistic well-being programs designed to support emotional balance and student happiness.",
+//       img: "/assets/img/sah/Gymn.jpeg",
+//       icon: "flaticon-lotus",
+//       gradient: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)",
+//     },
+//     {
+//       title: "Green & Sustainable Campus",
+//       desc: "Eco-friendly infrastructure featuring solar power, rainwater harvesting, and organic gardens fostering environmental awareness and sustainable living.",
+//       img: "/assets/img/sah/extra.jpeg",
+//       icon: "flaticon-leaf",
+//       gradient: "linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%)",
+//     },
+//   ];
+
+//   // GSAP scroll animation
+//   useEffect(() => {
+//     gsap.fromTo(
+//       ".infra-card",
+//       { opacity: 0, y: 80 },
+//       {
+//         opacity: 1,
+//         y: 0,
+//         duration: 1,
+//         stagger: 0.25,
+//         ease: "power3.out",
+//         scrollTrigger: {
+//           trigger: sectionRef.current,
+//           start: "top 80%",
+//         },
+//       }
+//     );
+//   }, []);
+
+//   // Toggle card: if clicked card is already active, collapse it
+//   const toggleCard = (index: number) => {
+//     setActiveIndex((prev) => (prev === index ? -1 : index));
+//   };
+
+//   return (
+//     <section
+//       ref={sectionRef}
+//       className="infrastructure-section section-padding"
+//       style={{
+//         background: "linear-gradient(135deg, #f4f8ff 0%, #eaf3ff 100%)",
+//         padding: "100px 0",
+//         position: "relative",
+//       }}
+//     >
+//       <div className="container">
+//         {/* Header */}
+//         <div className="text-center mb-5">
+//           <h6
+//             style={{
+//               color: "#0066cc",
+//               letterSpacing: "1px",
+//               textTransform: "uppercase",
+//               fontWeight: 600,
+//             }}
+//           >
+//             Infrastructure & Facilities
+//           </h6>
+//           <h2
+//             style={{
+//               fontWeight: 700,
+//               color: "#0b2b5c",
+//             }}
+//           >
+//             A Campus Built for Future-Ready Learning
+//           </h2>
+//           <p
+//             className="mt-3"
+//             style={{
+//               color: "#004080",
+//               maxWidth: "700px",
+//               margin: "0 auto",
+//             }}
+//           >
+//             Our campus combines technology, innovation, wellness, and sustainability
+//             creating an inspiring space for students to learn, grow, and thrive.
+//           </p>
+//         </div>
+
+//         {/* Facility Cards */}
+//         <div className="infra-cards-wrapper d-flex flex-column gap-4">
+//           {items.map((item, i) => {
+//             const isOpen = activeIndex === i;
+//             return (
+//               <div
+//                 key={i}
+//                 className="infra-card p-4 d-flex flex-column flex-lg-row align-items-center justify-content-between"
+//                 style={{
+//                   borderRadius: "20px",
+//                   background: item.gradient,
+//                   boxShadow: isOpen
+//                     ? "0 10px 25px rgba(0,102,204,0.25)"
+//                     : "0 6px 15px rgba(0,0,0,0.08)",
+//                   cursor: "pointer",
+//                   overflow: "hidden",
+//                   transition: "all 0.6s ease",
+//                   transform: isOpen ? "scale(1.02)" : "scale(1)",
+//                   height: isOpen ? "auto" : "95px",
+//                 }}
+//                 onClick={() => toggleCard(i)}
+//               >
+//                 {/* Header Row */}
+//                 <div
+//                   className="d-flex align-items-center justify-content-between w-100"
+//                   style={{ gap: "20px" }}
+//                 >
+//                   <h4
+//                     style={{
+//                       color: "#0b2b5c",
+//                       fontWeight: 700,
+//                       marginBottom: 0,
+//                     }}
+//                   >
+//                     {item.title}
+//                   </h4>
+//                   <i
+//                     className={item.icon}
+//                     style={{
+//                       fontSize: "28px",
+//                       color: "#0077cc",
+//                       transition: "transform 0.3s ease, color 0.3s ease",
+//                       transform: isOpen ? "rotate(15deg)" : "rotate(0)",
+//                     }}
+//                   ></i>
+//                 </div>
+
+//                 {/* Expandable Content */}
+//                 <div
+//                   className="content d-flex flex-column flex-lg-row align-items-center justify-content-between mt-3"
+//                   style={{
+//                     maxHeight: isOpen ? "1000px" : "0",
+//                     opacity: isOpen ? 1 : 0,
+//                     overflow: "hidden",
+//                     transition: "all 0.6s ease",
+//                   }}
+//                 >
+//                   {/* Image */}
+//                   <div
+//                     className="image mt-3 mt-lg-0"
+//                     style={{
+//                       flex: "1 1 45%",
+//                       borderRadius: "15px",
+//                       overflow: "hidden",
+//                       boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
+//                     }}
+//                   >
+//                     <img
+//                       src={item.img}
+//                       alt={item.title}
+//                       style={{
+//                         width: "100%",
+//                         borderRadius: "15px",
+//                         transition: "transform 0.6s ease",
+//                       }}
+//                       className="hover-scale"
+//                     />
+//                   </div>
+
+//                   {/* Text */}
+//                   <div
+//                     className="text mt-4 mt-lg-0 ps-lg-4"
+//                     style={{ flex: "1 1 50%", textAlign: "left" }}
+//                   >
+//                     <p
+//                       style={{
+//                         color: "#003b80",
+//                         lineHeight: 1.6,
+//                         fontSize: "16px",
+//                       }}
+//                     >
+//                       {item.desc}
+//                     </p>
+//                   </div>
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//       {/* Inline Styling */}
+//       <style>{`
+//         .hover-scale:hover {
+//           transform: scale(1.05);
+//         }
+//         .infra-card:hover {
+//           box-shadow: 0 12px 30px rgba(0, 102, 204, 0.25);
+//         }
+//       `}</style>
+//     </section>
+//   );
+// };
+
+// export default InfrastructureSection;
+
+
+
+// import { useState, useEffect, useRef } from "react";
+// import gsap from "gsap";
+// import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+// gsap.registerPlugin(ScrollTrigger);
+
+// const InfrastructureSection = () => {
+//   // Track currently active card (only one open at a time)
+//   const [activeIndex, setActiveIndex] = useState<number>(0);
+//   const sectionRef = useRef(null);
+
+//   const items = [
+//     {
+//       title: "World-Class Learning Spaces",
+//       desc: "Smart classrooms, digital library, and innovation labs equipped with the latest technology to create engaging and future-ready learning environments.",
+//       img: "/assets/img/sah/school.jpeg",
+//       icon: "flaticon-graduation-cap",
+//       gradient: "linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%)",
+//     },
+//     {
+//       title: "Innovation & Design Thinking Labs",
+//       desc: "Hands-on learning spaces for STEM, Robotics, 3D Printing, AI, and Coding Studios that spark creativity, problem-solving, and innovation.",
+//       img: "/assets/img/sah/sci.jpeg",
+//       icon: "flaticon-science",
+//       gradient: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
+//     },
+//     {
+//       title: "State-of-the-Art Sports Complex",
+//       desc: "Badminton, Skating, Turf Grounds, and Indoor Sports Arenas built to encourage teamwork, discipline, and athletic excellence.",
+//       img: "/assets/img/sah/foot.jpeg",
+//       icon: "flaticon-football",
+//       gradient: "linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%)",
+//     },
+//     {
+//       title: "Dedicated Arts & Performance Studios",
+//       desc: "Spaces for Theatre, Music, Dance, and Fine Arts where students express creativity, build confidence, and nurture artistic talent.",
+//       img: "/assets/img/sah/arch.jpeg",
+//       icon: "flaticon-music",
+//       gradient: "linear-gradient(135deg, #f5e0ff 0%, #faf5ff 100%)",
+//     },
+//     {
+//       title: "Wellness & Mindfulness Hub",
+//       desc: "Counseling rooms, meditation zones, and holistic well-being programs designed to support emotional balance and student happiness.",
+//       img: "/assets/img/sah/Gymn.jpeg",
+//       icon: "flaticon-lotus",
+//       gradient: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)",
+//     },
+//     {
+//       title: "Green & Sustainable Campus",
+//       desc: "Eco-friendly infrastructure featuring solar power, rainwater harvesting, and organic gardens fostering environmental awareness and sustainable living.",
+//       img: "/assets/img/sah/extra.jpeg",
+//       icon: "flaticon-leaf",
+//       gradient: "linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%)",
+//     },
+//   ];
+
+//   // Scroll animation for cards
+//   useEffect(() => {
+//     gsap.fromTo(
+//       ".infra-card",
+//       { opacity: 0, y: 80 },
+//       {
+//         opacity: 1,
+//         y: 0,
+//         duration: 1,
+//         stagger: 0.25,
+//         ease: "power3.out",
+//         scrollTrigger: {
+//           trigger: sectionRef.current,
+//           start: "top 80%",
+//         },
+//       }
+//     );
+//   }, []);
+
+//   // Toggle card: expand/collapse with translate animation
+//   const toggleCard = (index: number) => {
+//     if (activeIndex === index) {
+//       // Collapse card
+//       gsap.to(`.infra-card-${index} .content`, {
+//         opacity: 0,
+//         y: -30,
+//         duration: 0.5,
+//         ease: "power2.inOut",
+//       });
+//       setTimeout(() => setActiveIndex(-1), 200);
+//     } else {
+//       // Open new card
+//       setActiveIndex(index);
+//       setTimeout(() => {
+//         gsap.fromTo(
+//           `.infra-card-${index} .content`,
+//           { opacity: 0, y: 30 },
+//           { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+//         );
+//       }, 100);
+//     }
+//   };
+
+//   return (
+//     <section
+//       ref={sectionRef}
+//       className="infrastructure-section section-padding"
+//       style={{
+//         background: "linear-gradient(135deg, #f4f8ff 0%, #eaf3ff 100%)",
+//         padding: "100px 0",
+//         position: "relative",
+//       }}
+//     >
+//       <div className="container">
+//         {/* Header */}
+//         <div className="text-center mb-5">
+//           <h6
+//             style={{
+//               color: "#0066cc",
+//               letterSpacing: "1px",
+//               textTransform: "uppercase",
+//               fontWeight: 600,
+//             }}
+//           >
+//             Infrastructure & Facilities
+//           </h6>
+//           <h2
+//             style={{
+//               fontWeight: 700,
+//               color: "#0b2b5c",
+//             }}
+//           >
+//             A Campus Built for Future-Ready Learning
+//           </h2>
+//           <p
+//             className="mt-3"
+//             style={{
+//               color: "#004080",
+//               maxWidth: "700px",
+//               margin: "0 auto",
+//             }}
+//           >
+//             Our campus combines technology, innovation, wellness, and sustainability
+//             creating an inspiring space for students to learn, grow, and thrive.
+//           </p>
+//         </div>
+
+//         {/* Cards */}
+//         <div className="infra-cards-wrapper d-flex flex-column gap-4">
+//           {items.map((item, i) => {
+//             const isOpen = activeIndex === i;
+//             return (
+//               <div
+//                 key={i}
+//                 className={`infra-card infra-card-${i} p-4 d-flex flex-column flex-lg-row align-items-center justify-content-between`}
+//                 style={{
+//                   borderRadius: "20px",
+//                   background: item.gradient,
+//                   boxShadow: isOpen
+//                     ? "0 10px 25px rgba(0,102,204,0.25)"
+//                     : "0 6px 15px rgba(0,0,0,0.08)",
+//                   cursor: "pointer",
+//                   overflow: "hidden",
+//                   transition: "all 0.6s ease",
+//                   transform: isOpen ? "scale(1.02)" : "scale(1)",
+//                   height: isOpen ? "auto" : "95px",
+//                 }}
+//                 onClick={() => toggleCard(i)}
+//               >
+//                 {/* Header */}
+//                 <div
+//                   className="d-flex align-items-center justify-content-between w-100"
+//                   style={{ gap: "20px" }}
+//                 >
+//                   <h4
+//                     style={{
+//                       color: "#0b2b5c",
+//                       fontWeight: 700,
+//                       marginBottom: 0,
+//                     }}
+//                   >
+//                     {item.title}
+//                   </h4>
+//                   <i
+//                     className={item.icon}
+//                     style={{
+//                       fontSize: "28px",
+//                       color: "#0077cc",
+//                       transition: "transform 0.3s ease, color 0.3s ease",
+//                       transform: isOpen ? "rotate(15deg)" : "rotate(0)",
+//                     }}
+//                   ></i>
+//                 </div>
+
+//                 {/* Expandable Content */}
+//                 <div
+//                   className="content d-flex flex-column flex-lg-row align-items-center justify-content-between mt-3"
+//                   style={{
+//                     maxHeight: isOpen ? "1000px" : "0",
+//                     opacity: isOpen ? 1 : 0,
+//                     overflow: "hidden",
+//                     transition: "all 0.6s ease",
+//                   }}
+//                 >
+//                   {/* Image */}
+//                   <div
+//                     className="image mt-3 mt-lg-0"
+//                     style={{
+//                       flex: "1 1 45%",
+//                       borderRadius: "15px",
+//                       overflow: "hidden",
+//                       boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
+//                     }}
+//                   >
+//                     <img
+//                       src={item.img}
+//                       alt={item.title}
+//                       style={{
+//                         width: "100%",
+//                         borderRadius: "15px",
+//                         transition: "transform 0.6s ease",
+//                       }}
+//                       className="hover-scale"
+//                     />
+//                   </div>
+
+//                   {/* Text */}
+//                   <div
+//                     className="text mt-4 mt-lg-0 ps-lg-4"
+//                     style={{ flex: "1 1 50%", textAlign: "left" }}
+//                   >
+//                     <p
+//                       style={{
+//                         color: "#003b80",
+//                         lineHeight: 1.6,
+//                         fontSize: "16px",
+//                       }}
+//                     >
+//                       {item.desc}
+//                     </p>
+//                   </div>
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//       {/* Inline Styles */}
+//       <style>{`
+//         .hover-scale:hover {
+//           transform: scale(1.05);
+//         }
+//         .infra-card:hover {
+//           box-shadow: 0 12px 30px rgba(0, 102, 204, 0.25);
+//         }
+//       `}</style>
+//     </section>
+//   );
+// };
+
+// export default InfrastructureSection;
+
+
+import { useState, useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const InfrastructureSection = () => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(0);
+  const sectionRef = useRef(null);
+
+  const items = [
+    {
+      title: "World-Class Learning Spaces",
+      desc: "Smart classrooms, digital library, and innovation labs equipped with the latest technology to create engaging and future-ready learning environments.",
+      img: "/assets/img/sah/school.jpeg",
+      icon: "flaticon-graduation-cap",
+      gradient: "linear-gradient(135deg, #dbeafe 0%, #f0f9ff 100%)",
+    },
+    {
+      title: "Innovation & Design Thinking Labs",
+      desc: "Hands-on learning spaces for STEM, Robotics, 3D Printing, AI, and Coding Studios that spark creativity, problem-solving, and innovation.",
+      img: "/assets/img/sah/sci.jpeg",
+      icon: "flaticon-science",
+      gradient: "linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%)",
+    },
+    {
+      title: "State-of-the-Art Sports Complex",
+      desc: "Badminton, Skating, Turf Grounds, and Indoor Sports Arenas built to encourage teamwork, discipline, and athletic excellence.",
+      img: "/assets/img/imgnew/11zon.webp",
+      icon: "flaticon-football",
+      gradient: "linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%)",
+    },
+    {
+      title: "Dedicated Arts & Performance Studios",
+      desc: "Spaces for Theatre, Music, Dance, and Fine Arts where students express creativity, build confidence, and nurture artistic talent.",
+      img: "/assets/img/imgnew/A2_11zon_11zon (2).webp",
+      icon: "flaticon-music",
+      gradient: "linear-gradient(135deg, #f5e0ff 0%, #faf5ff 100%)",
+    },
+    {
+      title: "Wellness & Mindfulness Hub",
+      desc: "Counseling rooms, meditation zones, and holistic well-being programs designed to support emotional balance and student happiness.",
+      img: "/assets/img/imgnew/15-Benefits-Of-Meditation-For-Students.jpg",
+      icon: "flaticon-lotus",
+      gradient: "linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)",
+    },
+    {
+      title: "Green & Sustainable Campus",
+      desc: "Eco-friendly infrastructure featuring solar power, rainwater harvesting, and organic gardens fostering environmental awareness and sustainable living.",
+      img: "/assets/img/imgnew/IMG_6905_11zon_11zon.webp",
+      icon: "flaticon-leaf",
+      gradient: "linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%)",
+    },
+  ];
+
+  // Scroll animation for cards
+  useEffect(() => {
+    gsap.fromTo(
+      ".infra-card",
+      { opacity: 0, y: 80 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        stagger: 0.25,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+        },
+      }
+    );
+  }, []);
+
+  // Toggle card: expand/collapse content
+  const toggleCard = (index: number) => {
+    setActiveIndex((prev) => (prev === index ? null : index));
+  };
+
+  return (
+    <section
+      ref={sectionRef}
+      className="infrastructure-section section-padding"
+      style={{
+        background: "linear-gradient(135deg, #f4f8ff 0%, #eaf3ff 100%)",
+        padding: "100px 0",
+        position: "relative",
+      }}
+    >
+      <div className="container">
+        {/* Header */}
+        <div className="text-center mb-5">
+          <h6 className="mb-3"
+            style={{
+              color: "#0066cc",
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              fontWeight: 600,
+            }}
+          >
+            Infrastructure & Facilities
+          </h6>
+          <h2
+            style={{
+              fontWeight: 700,
+              color: "#0b2b5c",
+            }}
+          >
+            A Campus Built for Future-Ready Learning
+          </h2>
+          <p
+            className="mt-3"
+            style={{
+              color: "#004080",
+              maxWidth: "700px",
+              margin: "0 auto",
+            }}
+          >
+            Our campus combines technology, innovation, wellness, and sustainability
+            creating an inspiring space for students to learn, grow, and thrive.
+          </p>
+        </div>
+
+        {/* Cards */}
+        <div className="infra-cards-wrapper d-flex flex-column gap-4">
+          {items.map((item, i) => {
+            const isOpen = activeIndex === i;
+            return (
+              <div
+                key={i}
+                className={`infra-card infra-card-${i} p-4 d-flex flex-column flex-lg-row align-items-center justify-content-between`}
+                style={{
+                  borderRadius: "20px",
+                  background: item.gradient,
+                  boxShadow: isOpen
+                    ? "0 10px 25px rgba(0,102,204,0.25)"
+                    : "0 6px 15px rgba(0,0,0,0.08)",
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  transition: "all 0.6s ease",
+                  transform: isOpen ? "scale(1.02)" : "scale(1)",
+                }}
+                onClick={() => toggleCard(i)}
+              >
+                {/* Header */}
+                <div
+                  className="d-flex align-items-center justify-content-between w-100"
+                  style={{ gap: "20px" }}
+                >
+                  <h4
+                    style={{
+                      color: "#0b2b5c",
+                      fontWeight: 700,
+                      marginBottom: 0,
+                    }}
+                  >
+                    {item.title}
+                  </h4>
+                  <i
+                    className={item.icon}
+                    style={{
+                      fontSize: "28px",
+                      color: "#0077cc",
+                      transition: "transform 0.3s ease, color 0.3s ease",
+                      transform: isOpen ? "rotate(15deg)" : "rotate(0)",
+                    }}
+                  ></i>
+                </div>
+
+                {/* Expandable Content */}
+                <div
+                  className="content d-flex flex-column flex-lg-row align-items-center justify-content-between mt-3"
+                  style={{
+                    maxHeight: isOpen ? "1000px" : "0",
+                    opacity: isOpen ? 1 : 0,
+                    overflow: "hidden",
+                    transition: "all 0.6s ease",
+                  }}
+                >
+                  {/* Image */}
+                  <div
+                    className="image mt-3 mt-lg-0"
+                    style={{
+                      flex: "1 1 45%",
+                      borderRadius: "15px",
+                      overflow: "hidden",
+                      boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
+                    }}
+                  >
+                    <img
+                      src={item.img}
+                      alt={item.title}
+                      style={{
+                        width: "100%",
+                        borderRadius: "15px",
+                        transition: "transform 0.6s ease",
+                      }}
+                      className="hover-scale"
+                    />
+                  </div>
+
+                  {/* Text */}
+                  <div
+                    className="text mt-4 mt-lg-0 ps-lg-4"
+                    style={{ flex: "1 1 50%", textAlign: "left" }}
+                  >
+                    <p
+                      style={{
+                        color: "#003b80",
+                        lineHeight: 1.6,
+                        fontSize: "16px",
+                      }}
+                    >
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Inline Styles */}
+      <style>{`
+        .hover-scale:hover {
+          transform: scale(1.05);
+        }
+        .infra-card:hover {
+          box-shadow: 0 12px 30px rgba(0, 102, 204, 0.25);
+        }
+      `}</style>
+    </section>
+  );
+};
+
+export default InfrastructureSection;
+
+// import React, { useEffect } from "react";
+
+// const StackingCards: React.FC = () => {
+//   useEffect(() => {
+//     if (window.innerWidth >= 768) return;
+
+//     const cards = document.querySelectorAll<HTMLLIElement>(".card");
+
+//     const onScroll = () => {
+//       const scrollY = window.scrollY;
+
+//       cards.forEach((card, index) => {
+//         const content = card.querySelector(".card-content") as HTMLElement;
+//         if (!content) return;
+
+//         const start = index * 180;
+//         const end = start + 280;
+
+//         const progress = Math.min(
+//           Math.max((scrollY - start) / (end - start), 0),
+//           1
+//         );
+
+//         const translateY = progress * index * 45;
+//         const scale = 1 - progress * 0.08;
+
+//         content.style.transform = `translateY(${translateY}px) scale(${scale})`;
+//       });
+//     };
+
+//     window.addEventListener("scroll", onScroll);
+//     return () => window.removeEventListener("scroll", onScroll);
+//   }, []);
+
+//   return (
+//     <div className="stacking-wrapper">
+//       <style>{`
+//         .stacking-wrapper * { box-sizing: border-box; }
+
+//         .stacking-wrapper {
+//           width: 100%;
+//           max-width: 900px;
+//           margin: 40px auto;
+//           padding: 15px;
+//         }
+
+//         :root {
+//           --card-height: 45vh;
+//           --card-margin: 3vh;
+//           --card-top-offset: 2em;
+//           --numcards: 6;
+//         }
+
+//         @media (max-width: 768px) {
+//           #cards {
+//             padding-bottom: 320vh;
+//           }
+//         }
+
+//         #cards {
+//           list-style: none;
+//           display: grid;
+//           grid-template-rows: repeat(var(--numcards), var(--card-height));
+//           gap: var(--card-margin);
+//           padding-bottom: calc(var(--numcards) * var(--card-top-offset));
+//         }
+
+//         .card {
+//           position: sticky;
+//           top: 160px;
+//         }
+
+//         .card-content {
+//           background: #ffffff;
+//           border-radius: 1.2rem;
+//           padding: 1.2rem;
+//           overflow: hidden;
+//           display: grid;
+//           grid-template-columns: 1fr 1fr;
+//           gap: 1rem;
+//           transition: transform 0.25s ease-out;
+//           will-change: transform;
+//           box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+//         }
+
+//         .card-content img {
+//           width: 100%;
+//           height: 100%;
+//           object-fit: cover;
+//           border-radius: .8rem;
+//         }
+
+//         h2 { font-size: 1.3rem; margin: 0; color: #0b2b5c; font-weight: 700; }
+//         p { font-size: 0.95rem; line-height: 1.55; color: #003b80; }
+
+//         @supports (animation-timeline: works) {
+//           @media (min-width: 768px) {
+
+//             @scroll-timeline cards-scroll {
+//               source: selector(.stacking-wrapper);
+//               time-range: 6s;
+//             }
+
+//             .card { --index: 1; }
+//             .card:nth-child(1) { --index: 1; }
+//             .card:nth-child(2) { --index: 2; }
+//             .card:nth-child(3) { --index: 3; }
+//             .card:nth-child(4) { --index: 4; }
+//             .card:nth-child(5) { --index: 5; }
+//             .card:nth-child(6) { --index: 6; }
+
+//             .card {
+//               --i0: calc(var(--index) - 1);
+//               --rev: calc(var(--numcards) - var(--i0));
+//               --rev0: calc(var(--rev) - 1);
+//               padding-top: calc(var(--index) * var(--card-top-offset));
+//             }
+
+//             .card-content {
+//               animation: scale-card linear forwards;
+//               animation-timeline: cards-scroll;
+//               animation-duration: calc(var(--rev0) * 1s);
+//               animation-delay: calc(var(--i0) * 1s);
+//             }
+
+//             @keyframes scale-card {
+//               to { transform: scale(calc(1.05 - (0.085 * var(--rev)))); }
+//             }
+//           }
+//         }
+//       `}</style>
+
+//       {/* CARDS WITH INFRASTRUCTURE CONTENT */}
+//       <ul id="cards">
+
+//         {/* 1. Learning Spaces */}
+//         <li className="card">
+//           <div className="card-content">
+//             <div>
+//               <h2>World-Class Learning Spaces</h2>
+//               <p>
+//                 Smart classrooms, digital library, and innovation labs designed for immersive,
+//                 future-ready learning.
+//               </p>
+//             </div>
+//             <figure>
+//               <img src="/assets/img/sah/school.jpeg" />
+//             </figure>
+//           </div>
+//         </li>
+
+//         {/* 2. Innovation Labs */}
+//         <li className="card">
+//           <div className="card-content">
+//             <div>
+//               <h2>Innovation & Design Thinking Labs</h2>
+//               <p>
+//                 STEM, Robotics, 3D Printing, AI, and Coding Studios that ignite creativity
+//                 and problem-solving.
+//               </p>
+//             </div>
+//             <figure><img src="/assets/img/sah/sci.jpeg" /></figure>
+//           </div>
+//         </li>
+
+//         {/* 3. Sports Complex */}
+//         <li className="card">
+//           <div className="card-content">
+//             <div>
+//               <h2>State-of-the-Art Sports Complex</h2>
+//               <p>
+//                 Skating, Badminton, Turf Grounds, and indoor arenas fostering teamwork
+//                 and athletic excellence.
+//               </p>
+//             </div>
+//             <figure><img src="/assets/img/imgnew/11zon.webp" /></figure>
+//           </div>
+//         </li>
+
+//         {/* 4. Arts & Performance */}
+//         <li className="card">
+//           <div className="card-content">
+//             <div>
+//               <h2>Arts & Performance Studios</h2>
+//               <p>
+//                 Theatre, Music, Dance, and Fine Arts spaces that encourage expression
+//                 and build confidence.
+//               </p>
+//             </div>
+//             <figure><img src="/assets/img/imgnew/A2_11zon_11zon (2).webp" /></figure>
+//           </div>
+//         </li>
+
+//         {/* 5. Wellness Hub */}
+//         <li className="card">
+//           <div className="card-content">
+//             <div>
+//               <h2>Wellness & Mindfulness Hub</h2>
+//               <p>
+//                 Meditation zones, counseling rooms, and well-being programs supporting
+//                 emotional balance.
+//               </p>
+//             </div>
+//             <figure><img src="/assets/img/imgnew/15-Benefits-Of-Meditation-For-Students.jpg" /></figure>
+//           </div>
+//         </li>
+
+//         {/* 6. Sustainable Campus */}
+//         <li className="card">
+//           <div className="card-content">
+//             <div>
+//               <h2>Green & Sustainable Campus</h2>
+//               <p>
+//                 Solar power, rainwater harvesting, and eco-gardens inspiring
+//                 environmental responsibility.
+//               </p>
+//             </div>
+//             <figure><img src="/assets/img/imgnew/IMG_6905_11zon_11zon.webp" /></figure>
+//           </div>
+//         </li>
+
+//       </ul>
+//     </div>
+//   );
+// };
+
+// export default StackingCards;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// /////////// STacking
+import React, { useEffect } from "react";
+
+const infraItems = [
+  {
+    title: "World-Class Learning Spaces",
+    desc: "Smart classrooms, digital library, and innovation labs equipped with the latest technology to create engaging and future-ready learning environments.",
+    img: "/assets/img/sah/school.jpeg",
+    gradient: "linear-gradient(135deg, #cfe5ff 0%, #f2f8ff 100%)",
+  },
+  {
+    title: "Innovation & Design Thinking Labs",
+    desc: "Hands-on learning spaces for STEM, Robotics, 3D Printing, AI, and Coding Studios that spark creativity, problem-solving, and innovation.",
+    img: "/assets/img/sah/sci.jpeg",
+    gradient: "linear-gradient(135deg, #d4f7e4 0%, #effef6 100%)",
+  },
+  {
+    title: "State-of-the-Art Sports Complex",
+    desc: "Badminton, Skating, Turf Grounds, and Indoor Sports Arenas built to encourage teamwork, discipline, and athletic excellence.",
+    img: "/assets/img/imgnew/11zon.webp",
+    gradient: "linear-gradient(135deg, #ffe2e2 0%, #fff5f5 100%)",
+  },
+  {
+    title: "Dedicated Arts & Performance Studios",
+    desc: "Spaces for Theatre, Music, Dance, and Fine Arts where students express creativity, build confidence, and nurture artistic talent.",
+    img: "/assets/img/imgnew/A2_11zon_11zon (2).webp",
+    gradient: "linear-gradient(135deg, #f2dcff 0%, #faf4ff 100%)",
+  },
+  {
+    title: "Wellness & Mindfulness Hub",
+    desc: "Counseling rooms, meditation zones, and holistic well-being programs designed to support emotional balance and student happiness.",
+    img: "/assets/img/imgnew/15-Benefits-Of-Meditation-For-Students.jpg",
+    gradient: "linear-gradient(135deg, #dff2ff 0%, #f2faff 100%)",
+  },
+  {
+    title: "Green & Sustainable Campus",
+    desc: "Eco-friendly infrastructure featuring solar power, rainwater harvesting, and organic gardens fostering environmental awareness and sustainable living.",
+    img: "/assets/img/imgnew/IMG_6905_11zon_11zon.webp",
+    gradient: "linear-gradient(135deg, #dfffe8 0%, #f2fff8 100%)",
+  },
+];
+
+const StackingCards: React.FC = () => {
+  useEffect(() => {
+    if (window.innerWidth >= 768) return;
+
+    const cards = document.querySelectorAll<HTMLLIElement>(".card");
+
+    const onScroll = () => {
+      const scrollY = window.scrollY;
+
+      cards.forEach((card, index) => {
+        const content = card.querySelector(".card-content") as HTMLElement;
+        if (!content) return;
+
+        const start = index * 200;
+        const end = start + 320;
+
+        const progress = Math.min(
+          Math.max((scrollY - start) / (end - start), 0),
+          1
+        );
+
+        const translateY = progress * index * 50;
+        const scale = 1 - progress * 0.05;
+
+        content.style.transform = `translateY(${translateY}px) scale(${scale})`;
+        content.style.opacity = `${1 - progress * 0.25}`;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div className="stacking-wrapper">
+      <style>{`
+        .stacking-wrapper {
+          width: 100%;
+          max-width: 1100px;
+          margin: 20px auto;
+          padding: 10px 15px;
+            background: transparent !important;
+           
+        }
+
+        :root {
+          --card-height: 60vh;
+          --card-margin: 5vh;
+          --card-top-offset: 2em;
+          --numcards: 6;
+        }
+
+        #cards {
+          list-style: none;
+          display: grid;
+          grid-template-rows: repeat(var(--numcards), var(--card-height));
+          gap: var(--card-margin);
+          padding: 0;
+          margin: 0;
+           background: transparent !important;
+        }
+
+        .card {
+          position: sticky;
+          top: 140px;
+           background: transparent !important;
+           border-color: transparent !important;
+        }
+
+        .card-content {
+          border-radius: 24px;
+          padding: 2rem;
+          overflow: hidden;
+          transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+          display: grid;
+          grid-template-columns: 1.2fr 1fr;
+          gap: 25px;
+          backdrop-filter: blur(6px);
+          box-shadow: 0px 12px 35px rgba(0,0,0,0.08);
+          border: 1px solid rgba(255,255,255,0.4);
+          animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-content img {
+          width: 100%;
+          height: 100%;
+          border-radius: 18px;
+          object-fit: cover;
+          box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+          font-size: 1.9rem;
+          color: #0b2450;
+          margin-bottom: 12px;
+          line-height: 1.3;
+        }
+
+        .card p {
+          font-size: 1.1rem;
+          color: #003b80;
+          line-height: 1.65;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+          :root { --card-height: auto; }
+          .stacking-wrapper {
+            margin-bottom: 250px;
+          }
+
+          .card-content {
+            grid-template-columns: 1fr;
+            padding: 1.4rem;
+          }
+
+          .card-content img {
+            height: 240px;
+          }
+
+          .card h2 {
+            font-size: 1.5rem;
+          }
+        }
+
+        
+      `}</style>
+
+      <ul id="cards">
+        {infraItems.map((item, index) => (
+          <li className="card" key={index}>
+            <div
+              className="card-content"
+              style={{
+                background: item.gradient,
+              }}
+            >
+              <div>
+                <h2>{item.title}</h2>
+                <p>{item.desc}</p>
+              </div>
+
+              <figure>
+                <img src={item.img} alt={item.title} />
+              </figure>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default StackingCards;
