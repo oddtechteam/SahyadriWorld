@@ -57,7 +57,7 @@ const AdmissionProcessSection = () => {
         padding: "10px 0",
       }}
     >
-      <div className="container">
+      <div className="container mb-4">
         <div className="row align-items-center g-5">
           {/* Left Image */}
           <div className="col-lg-6">

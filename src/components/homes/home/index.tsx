@@ -14,6 +14,7 @@ import TeamHomeOne from "./TeamHomeOne";
 import HomeComp6 from "./HomeComp6";
 // import Boarding from "./Boarding";
 import BoardingAbout from "../../about/BoardingAbout";
+// import CardStack from "../../card/card";
 // import Preloader from "../../../common/Preloader";
 // import TopCategoryHomeOne from "./TopCategoryHomeOne";
 
@@ -30,15 +31,13 @@ const HomeOne = () => {
 
      
       {/* <TopCategoryHomeOne /> */}
-            <ChooseHomeOne />
-
-      <MarqueeOne />
-
-       <TopCategoryHomeTwo />
-
-      <TeamHomeOne />
-      <BoardingAbout />
-      {/* <Boarding/> */}
+        <ChooseHomeOne />
+        <TopCategoryHomeTwo />
+        {/* <CardStack /> */}
+        
+        <TeamHomeOne />
+        <BoardingAbout />
+        {/* <Boarding/> */}
       <TestimonialHomeFive />
       <HomeComp6 />
       <FaqHomeThree />

@@ -14,7 +14,7 @@ const MarqueeThree = () => {
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Preschool</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Kindergarten Study</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Quality Instructors</div>
-                        <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> 99% Happy Students</div>
+                        <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> 100% Happy Students</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Awards Winning</div>
                     </div>
                     <div className="comm">
@@ -24,7 +24,7 @@ const MarqueeThree = () => {
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Preschool</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Kindergarten Study</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Quality Instructors</div>
-                        <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> 99% Happy Students</div>
+                        <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> 100% Happy Students</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Awards Winning</div>
                     </div>
                     <div className="comm">
@@ -34,7 +34,7 @@ const MarqueeThree = () => {
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Preschool</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Kindergarten Study</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Quality Instructors</div>
-                        <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> 99% Happy Students</div>
+                        <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> 100% Happy Students</div>
                         <div className="cmn-textslide"><i className="flaticon-mortarboard"></i> Awards Winning</div>
                     </div>
                 </div>

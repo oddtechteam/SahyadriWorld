@@ -1,59 +1,71 @@
-// src/components/register/RegisterForm.tsx
+"use client";
+
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import Swal from "sweetalert2";
 import emailjs from "@emailjs/browser";
 
-/**
- * Final Admission Form with Razorpay (TEST), Full payload EmailJS & Google Sheets (full columns)
- *
- * - Razorpay: TEST mode by default (replace RAZORPAY_KEY)
- * - EmailJS: full payload (Option C)
- * - Google Sheets: full columns (Option 2)
- *
- * Replace the constants below with your real keys/URLs before deploying.
- */
+/* ------------ CONFIG (sample keys, change later) ------------ */
+const RAZORPAY_KEY = "rzp_test_1234567890"; // sample key
+const ADMISSION_FEE_PAISA = 50000; // 500 * 100 (not shown in UI)
 
-/* ================== CONFIG — REPLACE THESE ================== */
-const RAZORPAY_KEY = "rzp_test_1234567890"; // <-- Replace with your rzptest key
-const ADMISSION_FEE_PAISA = 50000; // 500 INR = 50000 paise
+// EmailJS
+const SERVICE_ID = "service_wswswsq";
+const TEMPLATE_ID = "template_nzsewus";
+const PUBLIC_KEY = "e5vZ59vfSPFDcwThA";
 
-const SERVICE_ID = "service_wswswsq"; // EmailJS service id
-const TEMPLATE_ID = "template_nzsewus"; // EmailJS template id
-const PUBLIC_KEY = "e5vZ59vfSPFDcwThA"; // EmailJS public key
-
+// Google Apps Script Web App URL (that stores JSON in one column)
 const GOOGLE_SHEETS_URL =
   "https://script.google.com/macros/s/AKfycbyPglIv5u21WeEcAe1nAltqsGFTbXd5R8sICO_pGaYpQiQUHebnflS6t0pHrLsgpMBh9Q/exec";
-/* ============================================================ */
 
-/* PDF path (uploaded file path — your tool will convert to URL) */
+// optional PDF link
 const PDF_REFERENCE = "/mnt/data/sahyadri school - Admission Form-LEGALctc.pdf";
 
-/* -------------------- Types -------------------- */
-type Sibling = { id: string; name: string; age: string; std: string; institution: string };
-type PrevEdu = { id: string; year: string; school: string; standard: string; marks: string };
+/* -------------------- helpers & types -------------------- */
 
-/* -------------------- Helpers -------------------- */
+type Sibling = {
+  id: string;
+  name: string;
+  age: string;
+  std: string;
+  institution: string;
+};
+
+type PrevEdu = {
+  id: string;
+  year: string;
+  school: string;
+  standard: string;
+  marks: string;
+};
+
 const uid = () => Math.random().toString(36).slice(2, 10);
 const isEmail = (s: string) => /\S+@\S+\.\S+/.test(s);
-const isPhone = (s: string) => /^\d{10}$/.test(s); // strict 10-digit Indian mobile
+const isPhone = (s: string) => /^\d{10}$/.test(s);
 const isAadhar = (s: string) => /^\d{12}$/.test(s);
 
+const onlyDigits = (value: string, max: number = 10) =>
+  value.replace(/\D/g, "").slice(0, max);
+
+declare global {
+  interface Window {
+    Razorpay?: any;
+  }
+}
+
 const RegisterForm: React.FC = () => {
-  // ui step: 1 = payment, 2 = full form
+  /* step 1 = payment, step 2 = full form */
   const [step, setStep] = useState<1 | 2>(1);
 
-  /* ---------------- Payment (Step 1) ---------------- */
+  /* ---------------- Payment state ---------------- */
   const [payerName, setPayerName] = useState("");
   const [payerPhone, setPayerPhone] = useState("");
   const [isPaying, setIsPaying] = useState(false);
 
-  // save payment result details
   const [paymentId, setPaymentId] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
 
-  /* ---------------- Full Form (Step 2) states ---------------- */
-  // student details
+  /* ---------------- Basic student / parent state (simplified) ---------------- */
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -82,29 +94,22 @@ const RegisterForm: React.FC = () => {
 
   // family
   const [fatherName, setFatherName] = useState("");
-  const [fatherNationality, setFatherNationality] = useState("");
-  const [fatherQualification, setFatherQualification] = useState("");
-  const [fatherOfficeAddress, setFatherOfficeAddress] = useState("");
-  const [fatherOccupation, setFatherOccupation] = useState("");
   const [fatherMobile, setFatherMobile] = useState("");
   const [fatherAnnualIncome, setFatherAnnualIncome] = useState("");
   const [fatherAadhar, setFatherAadhar] = useState("");
 
   const [motherNameState, setMotherNameState] = useState("");
-  const [motherNationality, setMotherNationality] = useState("");
-  const [motherQualification, setMotherQualification] = useState("");
-  const [motherOfficeAddress, setMotherOfficeAddress] = useState("");
-  const [motherOccupation, setMotherOccupation] = useState("");
   const [motherMobile, setMotherMobile] = useState("");
   const [motherAnnualIncome, setMotherAnnualIncome] = useState("");
   const [motherAadhar, setMotherAadhar] = useState("");
 
-  // other
-  const [isSingleParent, setIsSingleParent] = useState<"none" | "mother" | "father">("none");
+  const [isSingleParent, setIsSingleParent] = useState<
+    "none" | "mother" | "father"
+  >("none");
   const [sponsoredBy, setSponsoredBy] = useState("");
   const [permanentAddress, setPermanentAddress] = useState("");
 
-  // dynamic
+  // dynamic sections
   const [siblings, setSiblings] = useState<Sibling[]>([
     { id: uid(), name: "", age: "", std: "", institution: "" },
   ]);
@@ -112,26 +117,22 @@ const RegisterForm: React.FC = () => {
     { id: uid(), year: "", school: "", standard: "", marks: "" },
   ]);
 
-  // uploads
-  // const [photoFather, setPhotoFather] = useState<File | null>(null);
-  // const [photoMother, setPhotoMother] = useState<File | null>(null);
-  // const [photoStudent, setPhotoStudent] = useState<File | null>(null);
+  // photos (only previews; no file upload to backend)
   const [previewFather, setPreviewFather] = useState<string | null>(null);
   const [previewMother, setPreviewMother] = useState<string | null>(null);
   const [previewStudent, setPreviewStudent] = useState<string | null>(null);
 
-  // boards
+  // board flags
   const [boardSSC, setBoardSSC] = useState(false);
   const [boardCBSE, setBoardCBSE] = useState(false);
   const [boardICSE, setBoardICSE] = useState(false);
   const [boardOther, setBoardOther] = useState("");
 
-  // ack & misc
   const [agree, setAgree] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  /* ---------------- File handlers (previews) ---------------- */
+  /* ---------------- helper: file preview ---------------- */
   const fileToPreview = (file: File | null): Promise<string | null> => {
     if (!file) return Promise.resolve(null);
     return new Promise((resolve, reject) => {
@@ -142,38 +143,52 @@ const RegisterForm: React.FC = () => {
     });
   };
 
-  const handleFile = async (e: ChangeEvent<HTMLInputElement>, which: "father" | "mother" | "student") => {
+  const handleFile = async (
+    e: ChangeEvent<HTMLInputElement>,
+    which: "father" | "mother" | "student"
+  ) => {
     const f = e.target.files?.[0] ?? null;
     if (!f) return;
-    if (which === "father") {
-      // setPhotoFather(f);
-      const p = await fileToPreview(f);
-      setPreviewFather(p);
-    } else if (which === "mother") {
-      // setPhotoMother(f);
-      const p = await fileToPreview(f);
-      setPreviewMother(p);
-    } else {
-      // setPhotoStudent(f);
-      const p = await fileToPreview(f);
-      setPreviewStudent(p);
-    }
+    const preview = await fileToPreview(f);
+    if (which === "father") setPreviewFather(preview);
+    if (which === "mother") setPreviewMother(preview);
+    if (which === "student") setPreviewStudent(preview);
   };
 
-  /* ---------------- dynamic helpers ---------------- */
-  const addSibling = () => setSiblings((s) => [...s, { id: uid(), name: "", age: "", std: "", institution: "" }]);
+  /* ---------------- sibling / prevEdu helpers ---------------- */
+  const addSibling = () =>
+    setSiblings((s) => [
+      ...s,
+      { id: uid(), name: "", age: "", std: "", institution: "" },
+    ]);
+
   const updateSibling = (id: string, field: keyof Sibling, value: string) =>
-    setSiblings((s) => s.map((x) => (x.id === id ? { ...x, [field]: value } : x)));
-  const removeSibling = (id: string) => setSiblings((s) => s.filter((x) => x.id !== id));
+    setSiblings((s) =>
+      s.map((x) => (x.id === id ? { ...x, [field]: value } : x))
+    );
 
-  const addPrev = () => setPrevEdu((p) => [...p, { id: uid(), year: "", school: "", standard: "", marks: "" }]);
+  const removeSibling = (id: string) =>
+    setSiblings((s) => s.filter((x) => x.id !== id));
+
+  const addPrev = () =>
+    setPrevEdu((p) => [
+      ...p,
+      { id: uid(), year: "", school: "", standard: "", marks: "" },
+    ]);
+
   const updatePrev = (id: string, field: keyof PrevEdu, value: string) =>
-    setPrevEdu((p) => p.map((x) => (x.id === id ? { ...x, [field]: value } : x)));
-  const removePrev = (id: string) => setPrevEdu((p) => p.filter((x) => x.id !== id));
+    setPrevEdu((p) =>
+      p.map((x) => (x.id === id ? { ...x, [field]: value } : x))
+    );
 
-  /* ---------------- Razorpay Payment (client popup) ---------------- */
+  const removePrev = (id: string) =>
+    setPrevEdu((p) => p.filter((x) => x.id !== id));
+
+  /* ---------------- payment step ---------------- */
+
   const startPayment = async () => {
     setErrors({});
+
     if (!payerName.trim()) {
       setErrors({ payerName: "Name is required to proceed with payment." });
       return;
@@ -183,198 +198,108 @@ const RegisterForm: React.FC = () => {
       return;
     }
 
+    if (typeof window === "undefined" || !window.Razorpay) {
+      Swal.fire(
+        "Payment Error",
+        "Razorpay script is not loaded. Please check your integration.",
+        "error"
+      );
+      return;
+    }
+
     setIsPaying(true);
 
     try {
-      // Prepare Razorpay options (client-side popup)
-      const options: any = {
+      const options = {
         key: RAZORPAY_KEY,
         amount: ADMISSION_FEE_PAISA,
         currency: "INR",
         name: "Sahyadri World School",
         description: "Admission Registration Fee",
-        prefill: { name: payerName, contact: payerPhone },
+        prefill: {
+          name: payerName,
+          contact: payerPhone,
+        },
         theme: { color: "#0077cc" },
-        handler: function (response: any) {
-          // response contains: razorpay_payment_id, razorpay_order_id (if order used), razorpay_signature (if provided)
+        handler: (response: any) => {
           setPaymentId(response?.razorpay_payment_id ?? null);
           setOrderId(response?.razorpay_order_id ?? null);
           setSignature(response?.razorpay_signature ?? null);
 
-          Swal.fire("Payment successful", "Thank you. Please complete the application form.", "success");
-          // proceed to full form
+          Swal.fire(
+            "Payment Successful",
+            "Thank you. Please complete the admission form.",
+            "success"
+          );
           setStep(2);
         },
         modal: {
-          ondismiss: function () {
-            // user closed
+          ondismiss: () => {
             setIsPaying(false);
           },
         },
       };
 
-      const rzp = new (window as any).Razorpay(options);
+      const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (err) {
       console.error("Razorpay error:", err);
-      Swal.fire("Payment Error", "Could not initialize payment. Check console.", "error");
+      Swal.fire(
+        "Payment Error",
+        "Could not initialize Razorpay. Check console.",
+        "error"
+      );
     } finally {
       setIsPaying(false);
     }
   };
 
-  /* ---------------- Validation - full form ---------------- */
+  /* ---------------- validation ---------------- */
+
   const validateFull = () => {
     const e: Record<string, string> = {};
-    // basic required checks
+
     if (!firstName.trim()) e.firstName = "First name is required";
     if (!lastName.trim()) e.lastName = "Last name is required";
     if (!gender.trim()) e.gender = "Gender is required";
     if (!birthDate) e.birthDate = "Birth date is required";
-    if (!residentialAddress.trim()) e.residentialAddress = "Residential address required";
-    if (!mobile1.trim() || !isPhone(mobile1)) e.mobile1 = "Enter a valid 10-digit mobile";
+
+    if (!residentialAddress.trim())
+      e.residentialAddress = "Residential address required";
+
+    if (!mobile1.trim() || !isPhone(mobile1))
+      e.mobile1 = "Enter a valid 10-digit mobile";
+
     if (email && !isEmail(email)) e.email = "Invalid email address";
     if (aadhar && !isAadhar(aadhar)) e.aadhar = "Aadhar must be 12 digits";
-    if (!emContactNo || !isPhone(emContactNo)) e.emContactNo = "Valid emergency contact required";
+
+    if (!emContactNo || !isPhone(emContactNo))
+      e.emContactNo = "Valid emergency contact required";
     if (!emContactName) e.emContactName = "Emergency contact name required";
     if (!emRelation) e.emRelation = "Emergency relation required";
-    if (!fatherName && !motherNameState) e.parent = "At least one parent name is required";
+
+    if (!fatherName && !motherNameState)
+      e.parent = "At least one parent name is required";
+
     if (!agree) e.agree = "You must accept the declaration before submitting";
-    // Ensure payment done (because step 1 must be completed)
-    if (!paymentId) e.payment = "Registration fee payment is required before submission";
+
+    if (!paymentId)
+      e.payment =
+        "Registration fee payment is required before submitting the application.";
 
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
-  /* ---------------- Submit final application ---------------- */
-  const submitApplication = async (ev: FormEvent) => {
-    ev.preventDefault();
-    if (!validateFull()) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-    setIsSubmitting(true);
-
-    try {
-      // Prepare full payload with all fields as separate keys (Option C + Google Sheet full columns)
-      const payload: Record<string, any> = {
-        // Payment details
-        razorpay_payment_id: paymentId,
-        razorpay_order_id: orderId,
-        razorpay_signature: signature,
-        registration_amount_paise: ADMISSION_FEE_PAISA,
-        registration_amount_inr: ADMISSION_FEE_PAISA / 100,
-
-        // Student information
-        student_first_name: firstName,
-        student_middle_name: middleName,
-        student_last_name: lastName,
-        student_gender: gender,
-        student_birth_date: birthDate,
-        student_birth_in_words: birthWords,
-        student_blood_group: bloodGroup,
-        student_birth_place: birthPlace,
-        student_religion: religion,
-        student_caste: caste,
-        student_community: community,
-        student_aadhar: aadhar,
-        student_mother_tongue: motherTongue,
-        student_residential_address: residentialAddress,
-        student_correspondence_address: correspondenceAddress,
-        student_mobile_1: mobile1,
-        student_mobile_2: mobile2,
-        student_email: email,
-        student_distance_kms: distanceKms,
-        student_preferred_sms_number: smsMobile,
-
-        // Emergency
-        emergency_contact_number: emContactNo,
-        emergency_contact_name: emContactName,
-        emergency_contact_relation: emRelation,
-
-        // Father
-        father_name: fatherName,
-        father_nationality: fatherNationality,
-        father_qualification: fatherQualification,
-        father_office_address: fatherOfficeAddress,
-        father_occupation: fatherOccupation,
-        father_mobile: fatherMobile,
-        father_annual_income: fatherAnnualIncome,
-        father_aadhar: fatherAadhar,
-
-        // Mother
-        mother_name: motherNameState,
-        mother_nationality: motherNationality,
-        mother_qualification: motherQualification,
-        mother_office_address: motherOfficeAddress,
-        mother_occupation: motherOccupation,
-        mother_mobile: motherMobile,
-        mother_annual_income: motherAnnualIncome,
-        mother_aadhar: motherAadhar,
-
-        // Other
-        is_single_parent: isSingleParent,
-        sponsored_by: sponsoredBy,
-        permanent_address: permanentAddress,
-
-        // Siblings (store as JSON string and also short summary)
-        siblings_json: JSON.stringify(siblings),
-        siblings_summary: siblings.map((s) => `${s.name}|${s.age}|${s.std}|${s.institution}`).join(";;"),
-
-        // Previous education
-        prev_education_json: JSON.stringify(prevEdu),
-        prev_education_summary: prevEdu.map((p) => `${p.year}|${p.school}|${p.standard}|${p.marks}`).join(";;"),
-
-        // Boards
-        board_ssc: boardSSC,
-        board_cbse: boardCBSE,
-        board_icse: boardICSE,
-        board_other: boardOther,
-
-        // photo placeholders: Base64 strings (optional - EmailJS can embed)
-        photo_father_base64: previewFather,
-        photo_mother_base64: previewMother,
-        photo_student_base64: previewStudent,
-
-        // meta
-        submitted_at: new Date().toISOString(),
-      };
-
-      // Send to EmailJS (full payload)
-      await emailjs.send(SERVICE_ID, TEMPLATE_ID, payload as any, PUBLIC_KEY);
-
-      // Send to Google Sheets (Apps Script) — Option 2: send full columns
-      // The Apps Script should expect the same keys as columns; commonly you would map columns server-side.
-      // We send the payload as JSON — the script can parse and append the values to columns.
-      await fetch(GOOGLE_SHEETS_URL, {
-        method: "POST",
-        mode: "no-cors", // if you're using Apps Script WebApp published as "Anyone, even anonymous"
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      Swal.fire("Submitted!", "Application successfully submitted.", "success");
-
-      // reset everything and go back to initial step (optional)
-      resetAll();
-      setStep(1);
-    } catch (err) {
-      console.error("Submission error:", err);
-      Swal.fire("Error", "Submission failed — check console and network.", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  /* ---------------- submit ---------------- */
 
   const resetAll = () => {
-    // payment
+    setPayerName("");
+    setPayerPhone("");
     setPaymentId(null);
     setOrderId(null);
     setSignature(null);
-    setPayerName("");
-    setPayerPhone("");
-    // form fields
+
     setFirstName("");
     setMiddleName("");
     setLastName("");
@@ -395,406 +320,1132 @@ const RegisterForm: React.FC = () => {
     setEmail("");
     setDistanceKms("");
     setSmsMobile("");
+
     setEmContactNo("");
     setEmContactName("");
     setEmRelation("");
+
     setFatherName("");
-    setFatherNationality("");
-    setFatherQualification("");
-    setFatherOfficeAddress("");
-    setFatherOccupation("");
     setFatherMobile("");
     setFatherAnnualIncome("");
     setFatherAadhar("");
+
     setMotherNameState("");
-    setMotherNationality("");
-    setMotherQualification("");
-    setMotherOfficeAddress("");
-    setMotherOccupation("");
     setMotherMobile("");
     setMotherAnnualIncome("");
     setMotherAadhar("");
+
     setIsSingleParent("none");
     setSponsoredBy("");
     setPermanentAddress("");
+
     setSiblings([{ id: uid(), name: "", age: "", std: "", institution: "" }]);
     setPrevEdu([{ id: uid(), year: "", school: "", standard: "", marks: "" }]);
-    // setPhotoFather(null);
-    // setPhotoMother(null);
-    // setPhotoStudent(null);
+
     setPreviewFather(null);
     setPreviewMother(null);
     setPreviewStudent(null);
+
     setBoardSSC(false);
     setBoardCBSE(false);
     setBoardICSE(false);
     setBoardOther("");
+
     setAgree(false);
     setErrors({});
   };
 
-  /* ---------------- UI ---------------- */
+  const submitApplication = async (ev: FormEvent) => {
+    ev.preventDefault();
+
+    if (!validateFull()) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        formType: "admission-register", // so Apps Script can route
+        payment: {
+          payerName,
+          payerPhone,
+          paymentId,
+          orderId,
+          signature,
+          amountPaise: ADMISSION_FEE_PAISA,
+        },
+        student: {
+          firstName,
+          middleName,
+          lastName,
+          gender,
+          birthDate,
+          birthWords,
+          bloodGroup,
+          birthPlace,
+          religion,
+          caste,
+          community,
+          aadhar,
+          motherTongue,
+          residentialAddress,
+          correspondenceAddress,
+          mobile1,
+          mobile2,
+          email,
+          distanceKms,
+          smsMobile,
+        },
+        emergency: {
+          emContactNo,
+          emContactName,
+          emRelation,
+        },
+        father: {
+          fatherName,
+          fatherMobile,
+          fatherAnnualIncome,
+          fatherAadhar,
+        },
+        mother: {
+          motherNameState,
+          motherMobile,
+          motherAnnualIncome,
+          motherAadhar,
+        },
+        other: {
+          isSingleParent,
+          sponsoredBy,
+          permanentAddress,
+        },
+        siblings,
+        previousEducation: prevEdu,
+        boards: {
+          boardSSC,
+          boardCBSE,
+          boardICSE,
+          boardOther,
+        },
+        photos: {
+          previewFather,
+          previewMother,
+          previewStudent,
+        },
+        meta: {
+          submittedAt: new Date().toISOString(),
+        },
+      };
+
+      // 🔵 1) Send via EmailJS (optional, remove if not needed)
+      await emailjs.send(SERVICE_ID, TEMPLATE_ID, payload as any, PUBLIC_KEY);
+
+      // 🔵 2) Send to Google Sheets (Apps Script)
+      await fetch(GOOGLE_SHEETS_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      Swal.fire("Submitted!", "Application submitted successfully.", "success");
+
+      resetAll();
+      setStep(1); // back to payment step
+    } catch (err) {
+      console.error("Submission error:", err);
+      Swal.fire(
+        "Error",
+        "Submission failed — please check your network / console.",
+        "error"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  /* ---------------- styles ---------------- */
+
+  const phoneHandler =
+    (setter: (v: string) => void) =>
+    (e: ChangeEvent<HTMLInputElement>) =>
+      setter(onlyDigits(e.target.value, 10));
+
   return (
-    <div style={{ fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial", padding: 28, background: "linear-gradient(180deg,#f5f8ff 0%,#fff 100%)", minHeight: "10vh" }}>
+    <div
+      style={{
+        fontFamily:
+          "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif",
+        padding: 20,
+        background: "linear-gradient(180deg,#f5f8ff 0%,#fff 100%)",
+      }}
+    >
       <style>{`
-        .card { max-width: 1100px; margin: 0 auto; background: #fff; border-radius: 14px; padding: 28px; box-shadow: 0 10px 30px rgba(9,30,66,0.08); }
-        .title { color: #0b2b5c; font-size: 26px; font-weight:800; text-align:center; }
-        .sub { color: #004080; text-align:center; margin-top:8px; margin-bottom:18px; }
-        .section-head { display:flex; align-items:center; gap:10px; margin: 18px 0; }
-        .section-pill { background:#0b2b5c;color:#fff;padding:8px 12px;border-radius:6px;font-weight:700;font-size:14px; }
-        .section-accent { width:6px;height:30px;background:#FFD24A;border-radius:3px; }
-        .photos-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
-        .photo-card { flex:1; min-width:200px; background:#f7fbff; border-radius:10px; padding:12px; border:1px dashed rgba(0,119,204,0.12); display:flex; flex-direction:column; align-items:center; gap:8px; }
-        .photo-preview { width:100%; height:140px; border-radius:8px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#eaf1ff; }
-        .photo-preview img{ width:100%; height:100%; object-fit:cover; }
-        .upload-btn { display:inline-block; padding:8px 14px; background:#0077cc; color:#fff; border-radius:20px; cursor:pointer; font-size:13px; border:none; }
-        .grid { display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
-        .grid-2 { display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
-        .full { grid-column:1 / -1; }
-        .form-control { width:100%; padding:10px 12px; border-radius:10px; border:1px solid #e6eefc; background:#fbfdff; outline:none; font-size:14px; }
-        textarea.form-control { min-height:72px; resize:vertical; }
-        .small { font-size:13px; color:#555; }
-        .muted { color:#6b7280; font-size:13px; }
-        .error { color:#d9534f; font-size:13px; margin-top:6px; }
-        .btn-primary { background:#0077cc; color:#fff; padding:12px 20px; border-radius:12px; border:none; font-weight:700; cursor:pointer; }
-        .btn-outline { background:transparent; border:1px solid #e6eefc; padding:10px 12px; border-radius:10px; cursor:pointer; }
-        .inline-row { display:flex; gap:8px; align-items:center; }
-        .checkbox { width:16px; height:16px; }
+      .reg-control {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #c5d3e6 !important; /* visible border */
+  background: #f4f8ff !important; /* light blue so input is visible */
+  font-size: 14px;
+  color: #0b2b5c !important; /* dark text */
+}
+
+.reg-control::placeholder {
+  color: #7a8ba3 !important; /* visible placeholder */
+}
+
+.reg-control:focus {
+  outline: none;
+  border-color: #0077cc !important; /* deep blue */
+  background: #eef5ff !important; /* slightly brighter focus bg */
+  box-shadow: 0 0 0 3px rgba(0,119,204,0.15) !important;
+}
+  
+        .reg-card {
+          max-width: 1100px;
+          margin: 0 auto;
+          background: #fff;
+          border-radius: 14px;
+          padding: 24px;
+          box-shadow: 0 10px 30px rgba(9,30,66,0.08);
+        }
+        .reg-title {
+          color: #0b2b5c;
+          font-size: 26px;
+          font-weight: 800;
+          text-align: center;
+        }
+        .reg-sub {
+          color: #004080;
+          text-align: center;
+          margin: 8px 0 18px;
+          font-size: 15px;
+        }
+        .reg-section-head {
+          display:flex;
+          align-items:center;
+          gap:10px;
+          margin:18px 0 12px;
+        }
+        .reg-section-pill {
+          background:#0b2b5c;
+          color:#fff;
+          padding:6px 12px;
+          border-radius:6px;
+          font-weight:700;
+          font-size:14px;
+        }
+        .reg-section-accent {
+          width:6px;
+          height:26px;
+          border-radius:3px;
+          background:#ffd24a;
+        }
+        .reg-grid {
+          display:grid;
+          grid-template-columns: repeat(3, minmax(0,1fr));
+          gap:12px;
+        }
+        .reg-grid-2 {
+          display:grid;
+          grid-template-columns: repeat(2, minmax(0,1fr));
+          gap:12px;
+        }
+        .reg-full {
+          grid-column: 1 / -1;
+        }
+        .reg-control {
+          width:100%;
+          padding:10px 12px;
+          border-radius:10px;
+          border:1px solid #e6eefc;
+          background:#fbfdff;
+          font-size:14px;
+        }
+        .reg-control:focus {
+          outline:none;
+          border-color:#0077cc;
+          box-shadow:0 0 0 1px rgba(0,119,204,0.15);
+        }
+        .reg-textarea {
+          min-height:72px;
+          resize:vertical;
+        }
+        .reg-small { font-size:13px; color:black; }
+        .reg-muted { font-size:13px; color:#6b7280; }
+        .reg-error { color:#d9534f; font-size:13px; margin-top:4px; }
+        .reg-btn-primary {
+          background:#0077cc;
+          color:#fff;
+          padding:11px 20px;
+          border-radius:12px;
+          border:none;
+          font-weight:700;
+          cursor:pointer;
+        }
+        .reg-btn-primary[disabled] {
+          opacity:0.7;
+          cursor:not-allowed;
+        }
+        .reg-btn-outline {
+          background:transparent;
+          border:1px solid #e6eefc;
+          padding:8px 12px;
+          border-radius:10px;
+          cursor:pointer;
+          font-size:13px;
+        }
+        .reg-photos-row {
+          display:flex;
+          gap:12px;
+          flex-wrap:wrap;
+        }
+        .reg-photo-card {
+          flex:1;
+          min-width:200px;
+          background:#f7fbff;
+          border-radius:10px;
+          padding:12px;
+          border:1px dashed rgba(0,119,204,0.12);
+          display:flex;
+          flex-direction:column;
+          gap:8px;
+        }
+        .reg-photo-preview {
+          width:100%;
+          height:140px;
+          border-radius:8px;
+          background:#eaf1ff;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          overflow:hidden;
+        }
+        .reg-photo-preview img {
+          width:100%;
+          height:100%;
+          object-fit:cover;
+        }
+        .reg-upload-btn {
+          display:inline-block;
+          padding:6px 12px;
+          background:#0077cc;
+          color:#fff;
+          border-radius:20px;
+          cursor:pointer;
+          font-size:13px;
+          text-align:center;
+        }
+        .reg-step-indicators {
+          display:flex;
+          justify-content:center;
+          gap:12px;
+          margin-bottom:18px;
+        }
+        .reg-step-dot {
+          width:40px;
+          height:40px;
+          border-radius:999px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-weight:700;
+          font-size:15px;
+        }
         @media (max-width: 900px) {
-          .grid { grid-template-columns: 1fr; }
-          .grid-2 { grid-template-columns: 1fr; }
-          .photos-row { flex-direction:column; }
+          .reg-grid { grid-template-columns: 1fr; }
+          .reg-grid-2 { grid-template-columns: 1fr; }
+          .reg-card { padding:16px; }
         }
       `}</style>
 
-      <div className="card" role="main" aria-labelledby="admissionTitle">
-        <div id="admissionTitle" className="title">Sahyadri World School — Admission</div>
-        <div className="sub">Registration starts with payment of ₹500 — proceed to pay and then complete the full application.</div>
+      <div className="reg-card">
+        <div className="reg-title">Sahyadri World School — Admission</div>
+        <p className="reg-sub">
+          Registration starts with the application fee. After payment, complete
+          the detailed admission form.
+        </p>
 
-        {/* If errors exist show top banner */}
-        {Object.keys(errors).length > 0 && (
-          <div style={{ marginBottom: 12 }}>
-            <div style={{ padding: 12, borderRadius: 8, background: "#fff6f6", color: "#7b1b1b" }}>
-              Please fix the highlighted fields below.
-            </div>
+        <div className="reg-step-indicators">
+          <div
+            className="reg-step-dot"
+            style={{
+              background: step === 1 ? "#0077cc" : "#d0d9e8",
+              color: step === 1 ? "#fff" : "#333",
+            }}
+          >
+            1
+          </div>
+          <div
+            className="reg-step-dot"
+            style={{
+              background: step === 2 ? "#0077cc" : "#d0d9e8",
+              color: step === 2 ? "#fff" : "#333",
+            }}
+          >
+            2
+          </div>
+        </div>
+
+        {/* top error banner */}
+        {errors.payment && (
+          <div
+            style={{
+              marginBottom: 12,
+              padding: 10,
+              borderRadius: 8,
+              background: "#fff6f6",
+              color: "#7b1b1b",
+              fontSize: 13,
+            }}
+          >
+            {errors.payment}
           </div>
         )}
 
-        {/* ---------- STEP 1: Payment ---------- */}
+        {/* STEP 1: PAYMENT */}
         {step === 1 && (
-          <div style={{ maxWidth: 520, margin: "8px auto 24px" }}>
-            <div style={{ background: "#fff", padding: 20, borderRadius: 12, boxShadow: "0 8px 20px rgba(9,30,66,0.04)" }}>
-              <h3 style={{ margin: 0, marginBottom: 12, color: "#0b2b5c" }}>Step 1 — Payment</h3>
-              <p className="muted" style={{ marginTop: 0 }}>Enter payer name and mobile, then pay ₹500 to proceed to the admission form.</p>
+          <div
+            style={{
+              maxWidth: 520,
+              margin: "8px auto 0",
+            }}
+          >
+            <h3 style={{ color: "#0b2b5c", marginBottom: 10 }}>Step 1 – Payment</h3>
+            <p className="reg-muted">
+              Enter your details below and proceed to payment. The amount will
+              not be displayed here but is configured in the system.
+            </p>
 
-              <div style={{ marginBottom: 10 }}>
-                <label className="small">Name</label>
-                <input className="form-control" value={payerName} onChange={(e) => setPayerName(e.target.value)} />
-                {errors.payerName && <div className="error">{errors.payerName}</div>}
-              </div>
-
-              <div style={{ marginBottom: 12 }}>
-                <label className="small">Phone (10 digits)</label>
-                <input className="form-control" value={payerPhone} onChange={(e) => setPayerPhone(e.target.value)} />
-                {errors.payerPhone && <div className="error">{errors.payerPhone}</div>}
-              </div>
-
-              <div style={{ display: "flex", gap: 10 }}>
-                <button className="btn-primary" onClick={startPayment} disabled={isPaying}>
-                  {isPaying ? "Processing..." : "Pay ₹500 & Continue"}
-                </button>
-                {/* <button
-                  className="btn-outline"
-                  onClick={() =>
-                    Swal.fire({
-                      title: "Test Payment Info",
-                      html: `<b>Test Key:</b> ${RAZORPAY_KEY}<br/><b>Amount:</b> ₹500<br/><i>Use Razorpay test cards or UPI in the test popup</i>`,
-                      icon: "info",
-                    })
-                  }
-                >
-                  How to test
-                </button> */}
-              </div>
-
-              <div style={{ marginTop: 10, fontSize: 13 }} className="muted">
-                Payment id (after success): <strong style={{ color: "#0b2b5c" }}>{paymentId ?? "—"}</strong>
-              </div>
+            <div style={{ marginBottom: 10 }}>
+              <label className="reg-small">Parent / Guardian Name</label>
+              <input
+                className="reg-control"
+                value={payerName}
+                onChange={(e) => setPayerName(e.target.value)}
+              />
+              {errors.payerName && (
+                <div className="reg-error">{errors.payerName}</div>
+              )}
             </div>
+
+            <div style={{ marginBottom: 12 }}>
+              <label className="reg-small">Mobile Number (10 digits)</label>
+              <input
+                className="reg-control"
+                value={payerPhone}
+                onChange={phoneHandler(setPayerPhone)}
+              />
+              {errors.payerPhone && (
+                <div className="reg-error">{errors.payerPhone}</div>
+              )}
+            </div>
+
+            <button
+              type="button"
+              className="reg-btn-primary"
+              disabled={isPaying}
+              onClick={startPayment}
+            >
+              {isPaying ? "Processing..." : "Pay & Continue"}
+            </button>
+
+            <p className="reg-muted" style={{ marginTop: 8 }}>
+              Payment reference:{" "}
+              <strong>{paymentId ? paymentId : "Not paid yet"}</strong>
+            </p>
           </div>
         )}
 
-        {/* ---------- STEP 2: Full Form ---------- */}
+        {/* STEP 2: FULL FORM */}
         {step === 2 && (
           <form onSubmit={submitApplication}>
             {/* Photos */}
-            <div className="section-head">
-              <div className="section-pill">Photos</div>
-              <div className="section-accent" />
+            <div className="reg-section-head">
+              <div className="reg-section-pill">Photos</div>
+              <div className="reg-section-accent" />
             </div>
 
-            <div className="photos-row">
-              <div className="photo-card">
-                <div style={{ fontWeight: 700 }}>Affix Photo of Father</div>
-                <div className="photo-preview">{previewFather ? <img src={previewFather} alt="father" /> : <span className="muted">No photo</span>}</div>
-                <label className="upload-btn">
+            <div className="reg-photos-row">
+              <div className="reg-photo-card">
+                <div className="reg-small" style={{ fontWeight: 700 }}>
+                  Father&apos;s Photo
+                </div>
+                <div className="reg-photo-preview">
+                  {previewFather ? (
+                    <img src={previewFather} alt="father" />
+                  ) : (
+                    <span className="reg-muted">No photo selected</span>
+                  )}
+                </div>
+                <label className="reg-upload-btn">
                   Upload
-                  <input type="file" accept="image/*" onChange={(e) => handleFile(e, "father")} style={{ display: "none" }} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFile(e, "father")}
+                  />
                 </label>
               </div>
 
-              <div className="photo-card">
-                <div style={{ fontWeight: 700 }}>Affix Photo of Mother</div>
-                <div className="photo-preview">{previewMother ? <img src={previewMother} alt="mother" /> : <span className="muted">No photo</span>}</div>
-                <label className="upload-btn">
+              <div className="reg-photo-card">
+                <div className="reg-small" style={{ fontWeight: 700 }}>
+                  Mother&apos;s Photo
+                </div>
+                <div className="reg-photo-preview">
+                  {previewMother ? (
+                    <img src={previewMother} alt="mother" />
+                  ) : (
+                    <span className="reg-muted">No photo selected</span>
+                  )}
+                </div>
+                <label className="reg-upload-btn">
                   Upload
-                  <input type="file" accept="image/*" onChange={(e) => handleFile(e, "mother")} style={{ display: "none" }} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFile(e, "mother")}
+                  />
                 </label>
               </div>
 
-              <div className="photo-card">
-                <div style={{ fontWeight: 700 }}>Affix Photo of Student</div>
-                <div className="photo-preview">{previewStudent ? <img src={previewStudent} alt="student" /> : <span className="muted">No photo</span>}</div>
-                <label className="upload-btn">
+              <div className="reg-photo-card">
+                <div className="reg-small" style={{ fontWeight: 700 }}>
+                  Student&apos;s Photo
+                </div>
+                <div className="reg-photo-preview">
+                  {previewStudent ? (
+                    <img src={previewStudent} alt="student" />
+                  ) : (
+                    <span className="reg-muted">No photo selected</span>
+                  )}
+                </div>
+                <label className="reg-upload-btn">
                   Upload
-                  <input type="file" accept="image/*" onChange={(e) => handleFile(e, "student")} style={{ display: "none" }} />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFile(e, "student")}
+                  />
                 </label>
               </div>
             </div>
 
-            {/* Student Information */}
-            <div className="section-head">
-              <div className="section-pill">Student Information</div>
-              <div className="section-accent" />
+            {/* Student info */}
+            <div className="reg-section-head">
+              <div className="reg-section-pill">Student Information</div>
+              <div className="reg-section-accent" />
             </div>
 
-            <div className="grid">
+            <div className="reg-grid">
               <div>
-                <label className="small">First Name *</label>
-                <input className="form-control" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                {errors.firstName && <div className="error">{errors.firstName}</div>}
-              </div>
-
-              <div>
-                <label className="small">Middle Name</label>
-                <input className="form-control" value={middleName} onChange={(e) => setMiddleName(e.target.value)} />
-              </div>
-
-              <div>
-                <label className="small">Last Name *</label>
-                <input className="form-control" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                {errors.lastName && <div className="error">{errors.lastName}</div>}
+                <label className="reg-small">First Name *</label>
+                <input
+                  className="reg-control"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+                {errors.firstName && (
+                  <div className="reg-error">{errors.firstName}</div>
+                )}
               </div>
 
               <div>
-                <label className="small">Gender *</label>
-                <input className="form-control" placeholder="M / F" value={gender} onChange={(e) => setGender(e.target.value)} />
-                {errors.gender && <div className="error">{errors.gender}</div>}
+                <label className="reg-small">Middle Name</label>
+                <input
+                  className="reg-control"
+                  value={middleName}
+                  onChange={(e) => setMiddleName(e.target.value)}
+                />
               </div>
 
               <div>
-                <label className="small">Birth Date *</label>
-                <input type="date" className="form-control" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} />
-                {errors.birthDate && <div className="error">{errors.birthDate}</div>}
+                <label className="reg-small">Last Name *</label>
+                <input
+                  className="reg-control"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+                {errors.lastName && (
+                  <div className="reg-error">{errors.lastName}</div>
+                )}
               </div>
 
               <div>
-                <label className="small">Date of Birth (in words)</label>
-                <input className="form-control" value={birthWords} onChange={(e) => setBirthWords(e.target.value)} />
+                <label className="reg-small">Gender *</label>
+                <input
+                  className="reg-control"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
+                  placeholder="M / F"
+                />
+                {errors.gender && (
+                  <div className="reg-error">{errors.gender}</div>
+                )}
               </div>
 
               <div>
-                <label className="small">Blood Group</label>
-                <input className="form-control" value={bloodGroup} onChange={(e) => setBloodGroup(e.target.value)} />
+                <label className="reg-small">Date of Birth *</label>
+                <input
+                  type="date"
+                  className="reg-control"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                />
+                {errors.birthDate && (
+                  <div className="reg-error">{errors.birthDate}</div>
+                )}
               </div>
 
               <div>
-                <label className="small">Birth Place</label>
-                <input className="form-control" value={birthPlace} onChange={(e) => setBirthPlace(e.target.value)} />
+                <label className="reg-small">DOB (in words)</label>
+                <input
+                  className="reg-control"
+                  value={birthWords}
+                  onChange={(e) => setBirthWords(e.target.value)}
+                />
               </div>
 
               <div>
-                <label className="small">Religion</label>
-                <input className="form-control" value={religion} onChange={(e) => setReligion(e.target.value)} />
-              </div>
-
-              <div className="full">
-                <label className="small">Residential Address *</label>
-                <textarea className="form-control" value={residentialAddress} onChange={(e) => setResidentialAddress(e.target.value)} />
-                {errors.residentialAddress && <div className="error">{errors.residentialAddress}</div>}
-              </div>
-
-              <div className="full">
-                <label className="small">Correspondence Address</label>
-                <textarea className="form-control" value={correspondenceAddress} onChange={(e) => setCorrespondenceAddress(e.target.value)} />
+                <label className="reg-small">Blood Group</label>
+                <input
+                  className="reg-control"
+                  value={bloodGroup}
+                  onChange={(e) => setBloodGroup(e.target.value)}
+                />
               </div>
 
               <div>
-                <label className="small">Mobile No. (1) *</label>
-                <input className="form-control" value={mobile1} onChange={(e) => setMobile1(e.target.value)} />
-                {errors.mobile1 && <div className="error">{errors.mobile1}</div>}
+                <label className="reg-small">Birth Place</label>
+                <input
+                  className="reg-control"
+                  value={birthPlace}
+                  onChange={(e) => setBirthPlace(e.target.value)}
+                />
               </div>
 
               <div>
-                <label className="small">Mobile No. (2)</label>
-                <input className="form-control" value={mobile2} onChange={(e) => setMobile2(e.target.value)} />
+                <label className="reg-small">Religion</label>
+                <input
+                  className="reg-control"
+                  value={religion}
+                  onChange={(e) => setReligion(e.target.value)}
+                />
               </div>
 
               <div>
-                <label className="small">Email Address</label>
-                <input className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} />
-                {errors.email && <div className="error">{errors.email}</div>}
+                <label className="reg-small">Caste</label>
+                <input
+                  className="reg-control"
+                  value={caste}
+                  onChange={(e) => setCaste(e.target.value)}
+                />
               </div>
 
               <div>
-                <label className="small">Aadhar No.</label>
-                <input className="form-control" value={aadhar} onChange={(e) => setAadhar(e.target.value)} maxLength={12} />
-                {errors.aadhar && <div className="error">{errors.aadhar}</div>}
+                <label className="reg-small">Community</label>
+                <input
+                  className="reg-control"
+                  value={community}
+                  onChange={(e) => setCommunity(e.target.value)}
+                />
               </div>
 
               <div>
-                <label className="small">Mother Tongue</label>
-                <input className="form-control" value={motherTongue} onChange={(e) => setMotherTongue(e.target.value)} />
+                <label className="reg-small">Aadhar No.</label>
+                <input
+                  className="reg-control"
+                  value={aadhar}
+                  maxLength={12}
+                  onChange={(e) => setAadhar(onlyDigits(e.target.value, 12))}
+                />
+                {errors.aadhar && (
+                  <div className="reg-error">{errors.aadhar}</div>
+                )}
+              </div>
+
+              <div className="reg-full">
+                <label className="reg-small">Residential Address *</label>
+                <textarea
+                  className="reg-control reg-textarea"
+                  value={residentialAddress}
+                  onChange={(e) => setResidentialAddress(e.target.value)}
+                />
+                {errors.residentialAddress && (
+                  <div className="reg-error">{errors.residentialAddress}</div>
+                )}
+              </div>
+
+              <div className="reg-full">
+                <label className="reg-small">Correspondence Address</label>
+                <textarea
+                  className="reg-control reg-textarea"
+                  value={correspondenceAddress}
+                  onChange={(e) => setCorrespondenceAddress(e.target.value)}
+                />
               </div>
 
               <div>
-                <label className="small">Distance from School (kms)</label>
-                <input className="form-control" value={distanceKms} onChange={(e) => setDistanceKms(e.target.value)} />
+                <label className="reg-small">Mobile No. (1) *</label>
+                <input
+                  className="reg-control"
+                  value={mobile1}
+                  onChange={phoneHandler(setMobile1)}
+                />
+                {errors.mobile1 && (
+                  <div className="reg-error">{errors.mobile1}</div>
+                )}
               </div>
 
               <div>
-                <label className="small">Preferred Mobile for SMS</label>
-                <input className="form-control" value={smsMobile} onChange={(e) => setSmsMobile(e.target.value)} />
+                <label className="reg-small">Mobile No. (2)</label>
+                <input
+                  className="reg-control"
+                  value={mobile2}
+                  onChange={phoneHandler(setMobile2)}
+                />
+              </div>
+
+              <div>
+                <label className="reg-small">Email</label>
+                <input
+                  className="reg-control"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {errors.email && (
+                  <div className="reg-error">{errors.email}</div>
+                )}
+              </div>
+
+              <div>
+                <label className="reg-small">Mother Tongue</label>
+                <input
+                  className="reg-control"
+                  value={motherTongue}
+                  onChange={(e) => setMotherTongue(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="reg-small">Distance from School (km)</label>
+                <input
+                  className="reg-control"
+                  value={distanceKms}
+                  onChange={(e) => setDistanceKms(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label className="reg-small">Preferred SMS Mobile</label>
+                <input
+                  className="reg-control"
+                  value={smsMobile}
+                  onChange={phoneHandler(setSmsMobile)}
+                />
               </div>
             </div>
 
             {/* Emergency */}
-            <div className="section-head" style={{ marginTop: 18 }}>
-              <div className="section-pill">Emergency Contact Details</div>
-              <div className="section-accent" />
+            <div className="reg-section-head">
+              <div className="reg-section-pill">Emergency Contact</div>
+              <div className="reg-section-accent" />
             </div>
 
-            <div className="grid-2" style={{ marginBottom: 12 }}>
+            <div className="reg-grid-2">
               <div>
-                <label className="small">Emergency Contact No. *</label>
-                <input className="form-control" value={emContactNo} onChange={(e) => setEmContactNo(e.target.value)} />
-                {errors.emContactNo && <div className="error">{errors.emContactNo}</div>}
+                <label className="reg-small">Contact Number *</label>
+                <input
+                  className="reg-control"
+                  value={emContactNo}
+                  onChange={phoneHandler(setEmContactNo)}
+                />
+                {errors.emContactNo && (
+                  <div className="reg-error">{errors.emContactNo}</div>
+                )}
               </div>
-
               <div>
-                <label className="small">Name of the Person *</label>
-                <input className="form-control" value={emContactName} onChange={(e) => setEmContactName(e.target.value)} />
-                {errors.emContactName && <div className="error">{errors.emContactName}</div>}
+                <label className="reg-small">Name *</label>
+                <input
+                  className="reg-control"
+                  value={emContactName}
+                  onChange={(e) => setEmContactName(e.target.value)}
+                />
+                {errors.emContactName && (
+                  <div className="reg-error">{errors.emContactName}</div>
+                )}
               </div>
-
-              <div className="full">
-                <label className="small">Relation *</label>
-                <input className="form-control" value={emRelation} onChange={(e) => setEmRelation(e.target.value)} />
-                {errors.emRelation && <div className="error">{errors.emRelation}</div>}
+              <div className="reg-full">
+                <label className="reg-small">Relation *</label>
+                <input
+                  className="reg-control"
+                  value={emRelation}
+                  onChange={(e) => setEmRelation(e.target.value)}
+                />
+                {errors.emRelation && (
+                  <div className="reg-error">{errors.emRelation}</div>
+                )}
               </div>
             </div>
 
             {/* Family */}
-            <div className="section-head" style={{ marginTop: 8 }}>
-              <div className="section-pill">Family Details</div>
-              <div className="section-accent" />
+            <div className="reg-section-head">
+              <div className="reg-section-pill">Family Details</div>
+              <div className="reg-section-accent" />
             </div>
 
-            <div className="grid">
+            <div className="reg-grid-2">
               <div>
-                <label className="small">Father / Guardian Name *</label>
-                <input className="form-control" value={fatherName} onChange={(e) => setFatherName(e.target.value)} />
+                <label className="reg-small">Father / Guardian Name *</label>
+                <input
+                  className="reg-control"
+                  value={fatherName}
+                  onChange={(e) => setFatherName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="reg-small">Father Mobile</label>
+                <input
+                  className="reg-control"
+                  value={fatherMobile}
+                  onChange={phoneHandler(setFatherMobile)}
+                />
+              </div>
+              <div>
+                <label className="reg-small">Father Annual Income</label>
+                <input
+                  className="reg-control"
+                  value={fatherAnnualIncome}
+                  onChange={(e) => setFatherAnnualIncome(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="reg-small">Father Aadhar</label>
+                <input
+                  className="reg-control"
+                  value={fatherAadhar}
+                  maxLength={12}
+                  onChange={(e) =>
+                    setFatherAadhar(onlyDigits(e.target.value, 12))
+                  }
+                />
               </div>
 
               <div>
-                <label className="small">Father Mobile</label>
-                <input className="form-control" value={fatherMobile} onChange={(e) => setFatherMobile(e.target.value)} />
+                <label className="reg-small">Mother / Guardian Name *</label>
+                <input
+                  className="reg-control"
+                  value={motherNameState}
+                  onChange={(e) => setMotherNameState(e.target.value)}
+                />
               </div>
-
               <div>
-                <label className="small">Mother / Guardian Name *</label>
-                <input className="form-control" value={motherNameState} onChange={(e) => setMotherNameState(e.target.value)} />
+                <label className="reg-small">Mother Mobile</label>
+                <input
+                  className="reg-control"
+                  value={motherMobile}
+                  onChange={phoneHandler(setMotherMobile)}
+                />
               </div>
-
               <div>
-                <label className="small">Mother Mobile</label>
-                <input className="form-control" value={motherMobile} onChange={(e) => setMotherMobile(e.target.value)} />
+                <label className="reg-small">Mother Annual Income</label>
+                <input
+                  className="reg-control"
+                  value={motherAnnualIncome}
+                  onChange={(e) => setMotherAnnualIncome(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="reg-small">Mother Aadhar</label>
+                <input
+                  className="reg-control"
+                  value={motherAadhar}
+                  maxLength={12}
+                  onChange={(e) =>
+                    setMotherAadhar(onlyDigits(e.target.value, 12))
+                  }
+                />
+              </div>
+            </div>
+
+            {/* Sponsorship & address */}
+            <div className="reg-grid-2" style={{ marginTop: 12 }}>
+              <div className="reg-full">
+                <label className="reg-small">
+                  If child is sponsored, mention agency
+                </label>
+                <input
+                  className="reg-control"
+                  value={sponsoredBy}
+                  onChange={(e) => setSponsoredBy(e.target.value)}
+                />
               </div>
 
-              <div className="full">
-                <label className="small">If child is sponsored (agency name)</label>
-                <input className="form-control" value={sponsoredBy} onChange={(e) => setSponsoredBy(e.target.value)} />
+              <div className="reg-full">
+                <label className="reg-small">Permanent Address</label>
+                <textarea
+                  className="reg-control reg-textarea"
+                  value={permanentAddress}
+                  onChange={(e) => setPermanentAddress(e.target.value)}
+                />
               </div>
             </div>
 
             {/* Siblings */}
-            <div className="section-head" style={{ marginTop: 18 }}>
-              <div className="section-pill">Details of Brothers / Sisters</div>
-              <div className="section-accent" />
+            <div className="reg-section-head">
+              <div className="reg-section-pill">Siblings</div>
+              <div className="reg-section-accent" />
             </div>
 
             {siblings.map((s) => (
-              <div key={s.id} className="grid" style={{ alignItems: "center", marginBottom: 8 }}>
-                <div><input className="form-control" placeholder="Name" value={s.name} onChange={(e) => updateSibling(s.id, "name", e.target.value)} /></div>
-                <div><input className="form-control" placeholder="Age" value={s.age} onChange={(e) => updateSibling(s.id, "age", e.target.value)} /></div>
-                <div><input className="form-control" placeholder="Std" value={s.std} onChange={(e) => updateSibling(s.id, "std", e.target.value)} /></div>
-                <div className="full"><input className="form-control" placeholder="Institution" value={s.institution} onChange={(e) => updateSibling(s.id, "institution", e.target.value)} /></div>
-                {siblings.length > 1 && <div><button type="button" className="btn-outline" onClick={() => removeSibling(s.id)}>Remove</button></div>}
+              <div key={s.id} className="reg-grid" style={{ marginBottom: 8 }}>
+                <div>
+                  <input
+                    className="reg-control"
+                    placeholder="Name"
+                    value={s.name}
+                    onChange={(e) =>
+                      updateSibling(s.id, "name", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <input
+                    className="reg-control"
+                    placeholder="Age"
+                    value={s.age}
+                    onChange={(e) =>
+                      updateSibling(s.id, "age", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <input
+                    className="reg-control"
+                    placeholder="Std"
+                    value={s.std}
+                    onChange={(e) =>
+                      updateSibling(s.id, "std", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="reg-full">
+                  <input
+                    className="reg-control"
+                    placeholder="Institution"
+                    value={s.institution}
+                    onChange={(e) =>
+                      updateSibling(s.id, "institution", e.target.value)
+                    }
+                  />
+                </div>
+                {siblings.length > 1 && (
+                  <div>
+                    <button
+                      type="button"
+                      className="reg-btn-outline"
+                      onClick={() => removeSibling(s.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
-            <div style={{ marginBottom: 8 }}><button type="button" className="btn-outline" onClick={addSibling}>+ Add Sibling</button></div>
+            <button
+              type="button"
+              className="reg-btn-outline"
+              onClick={addSibling}
+              style={{ marginBottom: 12 }}
+            >
+              + Add Sibling
+            </button>
 
             {/* Previous Education */}
-            <div className="section-head" style={{ marginTop: 18 }}>
-              <div className="section-pill">Details of Previous Education</div>
-              <div className="section-accent" />
-            </div>
-
-            <div style={{ fontWeight: 700, display: "grid", gridTemplateColumns: "1fr 2fr 1fr 1fr", gap: 8, marginBottom: 8 }}>
-              <div>Year</div><div>School</div><div>Standard/Grade</div><div>Marks</div>
+            <div className="reg-section-head">
+              <div className="reg-section-pill">Previous Education</div>
+              <div className="reg-section-accent" />
             </div>
 
             {prevEdu.map((p) => (
-              <div key={p.id} style={{ marginBottom: 8 }}>
-                <div className="grid">
-                  <div><input className="form-control" placeholder="Year" value={p.year} onChange={(e) => updatePrev(p.id, "year", e.target.value)} /></div>
-                  <div><input className="form-control" placeholder="School" value={p.school} onChange={(e) => updatePrev(p.id, "school", e.target.value)} /></div>
-                  <div><input className="form-control" placeholder="Standard" value={p.standard} onChange={(e) => updatePrev(p.id, "standard", e.target.value)} /></div>
-                  <div><input className="form-control" placeholder="Marks" value={p.marks} onChange={(e) => updatePrev(p.id, "marks", e.target.value)} /></div>
-                  {prevEdu.length > 1 && <div><button type="button" className="btn-outline" onClick={() => removePrev(p.id)}>Remove</button></div>}
+              <div key={p.id} className="reg-grid" style={{ marginBottom: 8 }}>
+                <div>
+                  <input
+                    className="reg-control"
+                    placeholder="Year"
+                    value={p.year}
+                    onChange={(e) =>
+                      updatePrev(p.id, "year", e.target.value)
+                    }
+                  />
                 </div>
+                <div>
+                  <input
+                    className="reg-control"
+                    placeholder="School"
+                    value={p.school}
+                    onChange={(e) =>
+                      updatePrev(p.id, "school", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <input
+                    className="reg-control"
+                    placeholder="Standard"
+                    value={p.standard}
+                    onChange={(e) =>
+                      updatePrev(p.id, "standard", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <input
+                    className="reg-control"
+                    placeholder="Marks"
+                    value={p.marks}
+                    onChange={(e) =>
+                      updatePrev(p.id, "marks", e.target.value)
+                    }
+                  />
+                </div>
+                {prevEdu.length > 1 && (
+                  <div>
+                    <button
+                      type="button"
+                      className="reg-btn-outline"
+                      onClick={() => removePrev(p.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
-            <div style={{ marginBottom: 12 }}><button type="button" className="btn-outline" onClick={addPrev}>+ Add Row</button></div>
+            <button
+              type="button"
+              className="reg-btn-outline"
+              onClick={addPrev}
+              style={{ marginBottom: 12 }}
+            >
+              + Add Row
+            </button>
 
-            {/* Boards */}
-            <div style={{ marginTop: 12, marginBottom: 10 }}>
-              <label style={{ fontWeight: 700 }}>Previous School Affiliation</label>
-              <div style={{ display: "flex", gap: 12, marginTop: 8 }}>
-                <label className="inline-row"><input type="checkbox" checked={boardSSC} onChange={(e) => setBoardSSC(e.target.checked)} /> <span style={{ marginLeft: 6 }}>SSC</span></label>
-                <label className="inline-row"><input type="checkbox" checked={boardCBSE} onChange={(e) => setBoardCBSE(e.target.checked)} /> <span style={{ marginLeft: 6 }}>CBSE</span></label>
-                <label className="inline-row"><input type="checkbox" checked={boardICSE} onChange={(e) => setBoardICSE(e.target.checked)} /> <span style={{ marginLeft: 6 }}>ICSE</span></label>
-                <label className="inline-row"><input type="checkbox" checked={false} onChange={() => {}} /> <span style={{ marginLeft: 6 }}>Other</span></label>
+            {/* Board */}
+            <div style={{ marginTop: 8 }}>
+              <label className="reg-small" style={{ fontWeight: 700 }}>
+                Previous School Affiliation
+              </label>
+              <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
+                <label className="reg-small">
+                  <input
+                    type="checkbox"
+                    checked={boardSSC}
+                    onChange={(e) => setBoardSSC(e.target.checked)}
+                    style={{ marginRight: 4 }}
+                  />
+                  SSC
+                </label>
+                <label className="reg-small">
+                  <input
+                    type="checkbox"
+                    checked={boardCBSE}
+                    onChange={(e) => setBoardCBSE(e.target.checked)}
+                    style={{ marginRight: 4 }}
+                  />
+                  CBSE
+                </label>
+                <label className="reg-small">
+                  <input
+                    type="checkbox"
+                    checked={boardICSE}
+                    onChange={(e) => setBoardICSE(e.target.checked)}
+                    style={{ marginRight: 4 }}
+                  />
+                  ICSE
+                </label>
+                <label className="reg-small">
+                  <input
+                    type="checkbox"
+                    checked={!!boardOther}
+                    onChange={(e) =>
+                      setBoardOther(e.target.checked ? boardOther : "")
+                    }
+                    style={{ marginRight: 4 }}
+                  />
+                  Other
+                </label>
+                <input
+                  className="reg-control"
+                  style={{ maxWidth: 200 }}
+                  value={boardOther}
+                  onChange={(e) => setBoardOther(e.target.value)}
+                  placeholder="Specify board"
+                />
               </div>
             </div>
 
             {/* Declaration */}
-            <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginTop: 18 }}>
-              <input className="checkbox" type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} />
-              <div style={{ fontSize: 14 }}>
-                I hereby declare that the information given in this application is true and correct to the best of my knowledge.
-                I agree to abide by the rules and regulations of Sahyadri World School. I understand that registration fee is non-refundable.
-                {errors.agree && <div className="error">{errors.agree}</div>}
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                alignItems: "flex-start",
+                marginTop: 16,
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={agree}
+                onChange={(e) => setAgree(e.target.checked)}
+                style={{ marginTop: 4 }}
+              />
+              <div className="reg-small">
+                I hereby declare that the information given in this application
+                is true and correct to the best of my knowledge. I agree to
+                abide by the rules and regulations of Sahyadri World School and
+                understand that the registration fee is non-refundable.
+                {errors.agree && (
+                  <div className="reg-error" style={{ marginTop: 4 }}>
+                    {errors.agree}
+                  </div>
+                )}
               </div>
             </div>
 
             <div style={{ textAlign: "center", marginTop: 18 }}>
-              <button type="submit" className="btn-primary" disabled={isSubmitting}>{isSubmitting ? "Submitting..." : "Submit Application"}</button>
+              <button
+                type="submit"
+                className="reg-btn-primary"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Application"}
+              </button>
             </div>
 
-            <div style={{ marginTop: 12, textAlign: "center" }}>
-              <a href={PDF_REFERENCE} target="_blank" rel="noreferrer" style={{ color: "#0077cc" }}>Download / View official PDF form</a>
-            </div>
+            {PDF_REFERENCE && (
+              <div
+                style={{
+                  marginTop: 10,
+                  textAlign: "center",
+                  fontSize: 13,
+                }}
+              >
+                <a
+                  href={PDF_REFERENCE}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "#0077cc" }}
+                >
+                  View / Download official PDF form
+                </a>
+              </div>
+            )}
           </form>
         )}
       </div>

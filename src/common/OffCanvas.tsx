@@ -96,7 +96,7 @@ const OffCanvas = ({ setOpenCanvas, openCanvas }: any) => {
                   </li>
                   <li>
                     <span>🕘 Timings:</span> <br />
-                    Mon–Sat: 8:00 AM – 6:00 PM
+                    Mon–Sat: 9:00 AM – 5:00 PM
                   </li>
                 </ul>
 

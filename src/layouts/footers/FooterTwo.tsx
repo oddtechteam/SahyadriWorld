@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import Swal from "sweetalert2";
+
 const FooterTwo = () => {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -12,19 +15,6 @@ const FooterTwo = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Your application has been submitted successfully!");
-    setShowModal(false);
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      experience: "",
-      message: "",
-    });
-  };
 
   return (
     <>
@@ -325,12 +315,12 @@ const FooterTwo = () => {
                     <li>
                       <Link to="/contact">Contact Us</Link>
                     </li>
-                     <li>
-        <Link to="/privacy">Privacy Policy</Link>
-      </li>
-      <li>
-        <Link to="/terms-conditions">Terms & Conditions</Link>
-      </li>
+                    <li>
+                      <Link to="/privacy">Privacy Policy</Link>
+                    </li>
+                    <li>
+                      <Link to="/terms-conditions">Terms & Conditions</Link>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -384,7 +374,21 @@ const FooterTwo = () => {
         </div>
       </footer>
 
-      {/* Instructor Modal */}
+      {/* SWEET ALERT CUSTOM BUTTON STYLE */}
+      <style>{`
+  .swal-career-btn {
+    background-color: #0077cc !important;
+    color: #fff !important;
+    padding: 10px 25px !important;
+    border-radius: 25px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    outline: none !important;
+    cursor: pointer !important;
+  }
+`}</style>
+
+      {/* ---------------- Instructor Modal ---------------- */}
       {showModal && (
         <div
           className="custom-modal-overlay"
@@ -394,12 +398,89 @@ const FooterTwo = () => {
             <h3 style={{ color: "#0b2b5c", marginBottom: "15px" }}>
               Instructor Application
             </h3>
+
             <p style={{ color: "#004080", marginBottom: "20px" }}>
               Fill out this form to apply for a teaching position at{" "}
               <strong>Sahyadri World School</strong>.
             </p>
 
-            <form onSubmit={handleSubmit}>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+
+                // VALIDATION
+                if (!formData.name.trim()) {
+                  Swal.fire(
+                    "Required!",
+                    "Please enter your full name.",
+                    "warning"
+                  );
+                  return;
+                }
+
+                if (!formData.email.trim()) {
+                  Swal.fire(
+                    "Required!",
+                    "Please enter your email address.",
+                    "warning"
+                  );
+                  return;
+                }
+
+                if (!/^\d{10}$/.test(formData.phone)) {
+                  Swal.fire(
+                    "Invalid Phone!",
+                    "Phone number must be exactly 10 digits.",
+                    "warning"
+                  );
+                  return;
+                }
+
+                setLoading(true);
+
+                // SUBMIT TO GOOGLE SHEET
+                await fetch(
+                  "https://script.google.com/macros/s/AKfycbx04zlw9KL3wj6nQ4fGW7x05gb-jYxT4GyEUE5dFPo7DbapiZWDJrL8CO1CQy1FjjcgiQ/exec",
+                  {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      formType: "career",
+                      ...formData,
+                    }),
+                  }
+                );
+
+                setLoading(false);
+
+                // SUCCESS ALERT
+                Swal.fire({
+                  title: "Application Submitted!",
+                  text: "Thank you for applying. We will contact you soon.",
+                  icon: "success",
+                  confirmButtonText: "OK",
+                  buttonsStyling: false,
+                  customClass: {
+                    confirmButton: "swal-career-btn",
+                  },
+                });
+
+                // RESET ALL FIELDS
+                setFormData({
+                  name: "",
+                  email: "",
+                  phone: "",
+                  subject: "",
+                  experience: "",
+                  message: "",
+                });
+
+                // CLOSE MODAL
+                setShowModal(false);
+              }}
+            >
+              {/* FULL NAME */}
               <input
                 type="text"
                 placeholder="Full Name"
@@ -409,6 +490,8 @@ const FooterTwo = () => {
                 }
                 required
               />
+
+              {/* EMAIL */}
               <input
                 type="email"
                 placeholder="Email Address"
@@ -418,23 +501,32 @@ const FooterTwo = () => {
                 }
                 required
               />
+
+              {/* PHONE NUMBER (DIGITS ONLY, MAX 10) */}
               <input
-                type="tel"
-                placeholder="Phone Number"
+                type="text"
+                placeholder="Phone Number (10 digits)"
                 value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const digits = e.target.value.replace(/\D/g, "");
+                  if (digits.length <= 10) {
+                    setFormData({ ...formData, phone: digits });
+                  }
+                }}
                 required
               />
+
+              {/* SUBJECT */}
               <input
                 type="text"
                 placeholder="Subject Expertise"
                 value={formData.subject}
-                onChange={(e) =>
+          onChange={(e) =>
                   setFormData({ ...formData, subject: e.target.value })
                 }
               />
+
+              {/* EXPERIENCE */}
               <input
                 type="text"
                 placeholder="Years of Experience"
@@ -443,6 +535,8 @@ const FooterTwo = () => {
                   setFormData({ ...formData, experience: e.target.value })
                 }
               />
+
+              {/* MESSAGE */}
               <textarea
                 placeholder="Why do you want to join our school?"
                 rows={3}
@@ -452,6 +546,7 @@ const FooterTwo = () => {
                 }
               ></textarea>
 
+              {/* BUTTONS */}
               <div className="modal-actions">
                 <button
                   type="button"
@@ -460,8 +555,26 @@ const FooterTwo = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="submit-btn theme-btn">
-                  Submit
+
+                <button
+                  type="submit"
+                  className="submit-btn theme-btn"
+                  disabled={loading}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  {loading ? (
+                    <>
+                      <i className="fa fa-spinner fa-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
               </div>
             </form>
@@ -469,85 +582,78 @@ const FooterTwo = () => {
         </div>
       )}
 
-      {/* Modal Styling */}
+      {/* ---------------- Modal CSS ---------------- */}
       <style>{`
-        .custom-modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,0.55);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 9999;
-          animation: fadeIn 0.3s ease-in-out;
-        }
+  .custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-in-out;
+  }
 
-        .custom-modal {
-          background: #fff;
-          color: #000; /* Ensures black text color */
-          padding: 35px;
-          border-radius: 15px;
-          width: 90%;
-          max-width: 520px;
-          box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-          animation: slideUp 0.4s ease-out;
-        }
+  .custom-modal {
+    background: #fff;
+    color: #000;
+    padding: 35px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 520px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    animation: slideUp 0.4s ease-out;
+  }
 
-        .custom-modal input,
-        .custom-modal textarea {
-          width: 100%;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-          padding: 10px 15px;
-          font-size: 15px;
-          margin-bottom: 15px;
-          outline: none;
-          color: #000; /* Visible typed text */
-          background: #f9f9f9; /* Light background for contrast */
-          transition: border-color 0.3s ease, background 0.3s ease;
-        }
+  .custom-modal input,
+  .custom-modal textarea {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    font-size: 15px;
+    margin-bottom: 15px;
+    background: #f9f9f9;
+    color: #000;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
 
-        .custom-modal input::placeholder,
-        .custom-modal textarea::placeholder {
-          color: #666;
-        }
+  .custom-modal input:focus,
+  .custom-modal textarea:focus {
+    border-color: #0077cc;
+    background: #fff;
+  }
 
-        .custom-modal input:focus,
-        .custom-modal textarea:focus {
-          border-color: #0077cc;
-          background: #fff;
-        }
+  .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
 
-        .modal-actions {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-top: 15px;
-        }
+  .cancel-btn {
+    background: #ccc;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 25px;
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+  }
 
-        .cancel-btn {
-          background: #ccc;
-          border: none;
-          border-radius: 25px;
-          padding: 10px 25px;
-          color: #333;
-          font-weight: 600;
-          cursor: pointer;
-        }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
 
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-          from { transform: translateY(20px); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-      `}</style>
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+`}</style>
     </>
   );
 };

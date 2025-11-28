@@ -73,8 +73,9 @@ const DayBoarding = () => {
             }}
           >
            Day Boarding Program
+          
           </h1>
-
+        
           <p
             style={{
               fontSize: "1.3rem",
@@ -99,8 +100,11 @@ const DayBoarding = () => {
               boxShadow: "0 6px 15px rgba(0,0,0,0.2)",
             }}
           >
-            🕐 8:00 AM – 6:00 PM
+            🕐 9:00 AM – 5:00 PM
           </div>
+
+            <p style={{fontSize:"25px" , marginTop:"10px"}}> OPTIONAL</p>
+
         </div>
 
         {/* MOTIVATION CARD */}

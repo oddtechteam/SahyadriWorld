@@ -9,7 +9,7 @@ import HeaderOne from "../../layouts/headers/HeaderOne";
 // import TopCategoryHomeTwo from "../homes/home-2/TopCategoryHomeTwo";
 import AdmissionApplicationSection from "./AdmissionApplicationSection";
 import AdmissionProcessSection from "./AdmissionProcessSection";
-import RegisterForm from "../register/RegisterForm";
+// import RegisterForm from "../register/RegisterForm";
 // import GalleryArea from "./GalleryArea";
 
 const Admission = () => {
@@ -19,10 +19,11 @@ const Admission = () => {
       <HeaderOne />
      
       <BreadcrumbEvent title="Admission" subtitle="Admission" />
-        <RegisterForm />
-      <AdmissionProcessSection />
-       
+        {/* <RegisterForm /> */}
+             
       <AdmissionApplicationSection />
+      <AdmissionProcessSection />
+  
       <MarqueeOne />    
 
       {/* <TopCategoryHomeTwo /> */}

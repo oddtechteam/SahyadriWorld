@@ -7,7 +7,6 @@ import ScrollTop from "../../common/ScrollTop";
 // import FooterOne from "../../layouts/footers/FooterOne";
 import FooterTwo from "../../layouts/footers/FooterTwo";
 import HeaderOne from "../../layouts/headers/HeaderOne";
-// import AdmissionApplicationSection from "../admission/AdmissionApplicationSection";
 import AdmissionProcessSection from "../admission/AdmissionProcessSection";
 import TopCategoryHomeTwo from "../homes/home-2/TopCategoryHomeTwo";
 import RegisterForm from "./RegisterForm";

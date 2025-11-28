@@ -28,7 +28,7 @@ const ChooseHomeOne = () => {
                     <p>Holistic Growth</p>
                   <h2>
                     <span className="odometer" data-count="99">
-                      <Count number={99} text="%" />
+                      <Count number={100} text="%" />
                     </span>
                   </h2>
                   <p>

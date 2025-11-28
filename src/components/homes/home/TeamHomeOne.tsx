@@ -75,19 +75,10 @@ const slides = [
     text: "Every small step you take today is a giant leap towards the successful future you are building",
   },
     {
-    img: "assets/img/imgnew/IMG_6915_11zon_11zon.webp",
-    title: "The Sahyadri Family Celebrating Creativity and Community Spirit",
-    text: "This event beautifully captured the talent and collaborative heart of our entire Sahyadri community",
-  },
-    {
     img: "assets/img/imgnew/IMG_6916_11zon_11zon.webp",
     title: "School Friends on an Adventure",
     text: "Big smiles and new friends Learning is fun when we do it together",
   },
-
-
-
-
     {
     img: "assets/img/imgnew/IMG_6908_11zon_11zon.webp",
     title: "Celebrating Collaborative Success",
