@@ -179,7 +179,7 @@ const FooterTwo = () => {
                       We welcome you to the Sahyadri family!
                     </p>
                     <Link
-                      to="/admission"
+                      to="/Register"
                       className="theme-btn wow fadeInUp"
                       data-wow-delay=".5s"
                     >
@@ -303,9 +303,9 @@ const FooterTwo = () => {
                     <li>
                       <Link to="/about">About Sahyadri</Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link to="/admissions">Admissions</Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link to="/gallery">Campus & Facilities</Link>
                     </li>
@@ -316,7 +316,7 @@ const FooterTwo = () => {
                       <Link to="/contact">Contact Us</Link>
                     </li>
                     <li>
-                      <Link to="/privacy">Privacy Policy</Link>
+                      <Link to="/privacy-policy">Privacy Policy</Link>
                     </li>
                     <li>
                       <Link to="/terms-conditions">Terms & Conditions</Link>

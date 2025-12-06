@@ -177,10 +177,16 @@ const menu_data: DataType[] = [
   //   link: "/career",
   //   icon: "fas fa-briefcase",
   // },
-  {
-    id: 5,
-    title: "Admissions",
-    link: "/admission",
+  // {
+  //   id: 5,
+  //   title: "Enquire Now",
+  //   link: "/Enquire-Now",
+  //   icon: "fas fa-user-graduate",
+  // },
+   {
+    id: 6,
+    title: "Register",
+    link: "/Register",
     icon: "fas fa-user-graduate",
   },
   {

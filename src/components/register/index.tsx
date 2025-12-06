@@ -7,8 +7,8 @@ import ScrollTop from "../../common/ScrollTop";
 // import FooterOne from "../../layouts/footers/FooterOne";
 import FooterTwo from "../../layouts/footers/FooterTwo";
 import HeaderOne from "../../layouts/headers/HeaderOne";
-import AdmissionProcessSection from "../admission/AdmissionProcessSection";
-import TopCategoryHomeTwo from "../homes/home-2/TopCategoryHomeTwo";
+// import AdmissionProcessSection from "../admission/AdmissionProcessSection";
+// import TopCategoryHomeTwo from "../homes/home-2/TopCategoryHomeTwo";
 import RegisterForm from "./RegisterForm";
 
 // import GalleryArea from "./GalleryArea";
@@ -20,12 +20,12 @@ const register = () => {
       <HeaderOne />
       <BreadcrumbEvent title="register" subtitle="Register" />
       <RegisterForm	/>
-      <AdmissionProcessSection />
+      {/* <AdmissionProcessSection /> */}
       {/* <AdmissionApplicationSection /> */}
       {/* <MarqueeOne /> */}
 	  
 
-      <TopCategoryHomeTwo />
+      {/* <TopCategoryHomeTwo /> */}
 
       {/* <GalleryArea /> */}
       <FooterTwo />

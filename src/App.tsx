@@ -34,15 +34,15 @@ import SignIn from "./components/sign-in";
 import Register from "./components/register";
 import NotFound from "./components/Error";
 import Contact from "./components/contact";
-import Admission from "./components/admission";
+// import Admission from "./components/admission";
 import PrivacyPolicy from "./components/contact/PrivacyPolicy"; // Add this import
 import TNC from "./components/contact/TNC"; // Add this import
-
+// import ScholarshipCourseCard from "./components/register/ScholarshipCourseCard";
 
 
 const router = createBrowserRouter([
   { path: "/", element: <HomeOne /> },
-  { path: "/admission", element: <Admission /> },
+  // { path: "/Enquire-Now", element: <Admission /> },
   // { path: "/home-2", element: <HomeTwo /> },
   // { path: "/home-3", element: <HomeThree /> },
   // { path: "/home-4", element: <HomeFour /> },
@@ -74,10 +74,11 @@ const router = createBrowserRouter([
   { path: "/sign-in", element: <SignIn /> }, 
   { path: "/register", element: <Register /> }, 
   { path: "/contact", element: <Contact /> }, 
-   { path: "/privacy", element: <PrivacyPolicy /> }, // Add this route
+   { path: "/privacy-policy", element: <PrivacyPolicy /> }, // Add this route
+   { path: "/privacy-policy", element: <PrivacyPolicy /> }, // Add this route
   { path: "/terms-conditions", element: <TNC /> }, // Add this route
 
-
+  // {path:"/ScholarshipCourseCard", element:<ScholarshipCourseCard />},
 
   { path: "*", element: <NotFound /> },
 ]);

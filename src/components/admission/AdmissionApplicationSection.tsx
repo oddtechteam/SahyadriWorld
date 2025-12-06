@@ -138,7 +138,7 @@ const AdmissionApplicationSection = () => {
         {/* HEADER */}
         <div className="text-center mb-5">
           <h2 style={{ color: "#0b2b5c", fontWeight: 700 }}>
-            Admission <span style={{ color: "#0077cc" }}>Form</span>
+            Enquiry <span style={{ color: "#0077cc" }}>Form</span>
           </h2>
         </div>
 

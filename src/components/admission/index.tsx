@@ -18,7 +18,7 @@ const Admission = () => {
       {/* <Preloader /> */}
       <HeaderOne />
      
-      <BreadcrumbEvent title="Admission" subtitle="Admission" />
+      <BreadcrumbEvent title="Enquire Now" subtitle="Enquire Now" />
         {/* <RegisterForm /> */}
              
       <AdmissionApplicationSection />

@@ -1,4 +1,7 @@
 import React from 'react';
+import FooterTwo from '../../layouts/footers/FooterTwo';
+import HeaderOne from '../../layouts/headers/HeaderOne';
+import BreadcrumbEvent from '../../common/breadcrumb/BreadcrumbEvent';
 
 const PrivacyPolicy: React.FC = () => {
   const styles = {
@@ -7,13 +10,13 @@ const PrivacyPolicy: React.FC = () => {
       maxWidth: '1000px',
       margin: '0 auto',
       padding: '20px',
-      color: '#333',
+      color: '#111d35ff',
       lineHeight: '1.6',
       backgroundColor: '#f8f9fa',
       minHeight: '100vh',
     },
     header: {
-      backgroundColor: '#2c3e50',
+      backgroundColor: '#5789bbff',
       color: 'white',
       padding: '30px 0',
       textAlign: 'center' as const,
@@ -95,18 +98,21 @@ const PrivacyPolicy: React.FC = () => {
   };
 
   return (
+    <>
+    <HeaderOne />
+      <BreadcrumbEvent title="Privacy & Policy" subtitle="Privacy & Policy" />
     <div style={styles.container}>
-      <div style={styles.header}>
-        <h1>Sahyadri World School</h1>
-        <p>Privacy Policy for Admission Process</p>
-      </div>
+      {/* <div style={styles.header}>
+        <h1 style={{fontSize:"30px"}}>Sahyadri World School</h1>
+        <p>Terms and Conditions for Admission</p>
+      </div> */}
 
       <div style={styles.content}>
         <h2 style={styles.heading}>Privacy Policy</h2>
         
         <div style={styles.section}>
           <p style={styles.paragraph}>
-            At <span style={styles.strong}>Sahyadri World School</span>, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our admission form payment services through Razorpay.
+            At <span style={styles.strong}>Sahyadri World School</span>, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our admission form payment services through PhonePe.
           </p>
         </div>
 
@@ -133,10 +139,10 @@ const PrivacyPolicy: React.FC = () => {
 
           <h4 style={{...styles.subheading, fontSize: '18px', margin: '15px 0 10px 0'}}>Payment Information</h4>
           <ul style={styles.list}>
-            <li style={styles.listItem}>Transaction details through Razorpay</li>
-            <li style={styles.listItem}>Payment method type (credit card, debit card, net banking, UPI)</li>
+            <li style={styles.listItem}>Transaction details through PhonePe</li>
+            <li style={styles.listItem}>Payment method type (credit card, debit card, net banking, UPI, wallet)</li>
             <li style={styles.listItem}>Transaction ID, amount, and date</li>
-            <li style={styles.listItem}>Note: We do not store sensitive payment details like credit card numbers, CVV, etc.</li>
+            <li style={styles.listItem}>Note: We do not store sensitive payment details like credit card numbers, CVV, UPI PIN, etc.</li>
           </ul>
 
           <h4 style={{...styles.subheading, fontSize: '18px', margin: '15px 0 10px 0'}}>Technical Information</h4>
@@ -153,7 +159,7 @@ const PrivacyPolicy: React.FC = () => {
           <p style={styles.paragraph}>We use the collected information for the following purposes:</p>
           <ul style={styles.list}>
             <li style={styles.listItem}>Process your admission application and verify eligibility</li>
-            <li style={styles.listItem}>Complete payment transactions through Razorpay</li>
+            <li style={styles.listItem}>Complete payment transactions through PhonePe</li>
             <li style={styles.listItem}>Communicate with you regarding admission status, requirements, and updates</li>
             <li style={styles.listItem}>Provide customer support and respond to inquiries</li>
             <li style={styles.listItem}>Maintain academic records as per educational regulations</li>
@@ -170,10 +176,10 @@ const PrivacyPolicy: React.FC = () => {
             We may share necessary information with the following entities under strict confidentiality agreements:
           </p>
           
-          <h4 style={{...styles.subheading, fontSize: '18px', margin: '15px 0 10px 0'}}>Razorpay (Payment Processor)</h4>
+          <h4 style={{...styles.subheading, fontSize: '18px', margin: '15px 0 10px 0'}}>PhonePe (Payment Processor)</h4>
           <ul style={styles.list}>
             <li style={styles.listItem}>Minimum required information for payment processing</li>
-            <li style={styles.listItem}>Razorpay's privacy policy applies to payment data handling</li>
+            <li style={styles.listItem}>PhonePe's privacy policy applies to payment data handling</li>
             <li style={styles.listItem}>PCI-DSS compliant secure payment processing</li>
           </ul>
 
@@ -291,6 +297,8 @@ const PrivacyPolicy: React.FC = () => {
         </div>
       </div>
     </div>
+    <FooterTwo />
+    </>
   );
 };
 

@@ -42,8 +42,22 @@ const AboutHomeFive = () => {
                   <div className="section-title color-blue">
                     <h6 className="wow fadeInUp">About Sahyadri World School</h6>
                     <h3 className="wow fadeInUp" data-wow-delay=".3s">
-                    Shaping young minds for 23 years with love and learning.
+                      Shaping young minds for 23 years with love and learning.
                     </h3>
+                    
+                    {/* Foundation Badge/Note */}
+                    <div className="foundation-note mt-2 wow fadeInUp" data-wow-delay=".4s">
+                      <p style={{ 
+                        fontSize: "14px", 
+                        color: "#2c3e50",
+                        fontStyle: "italic",
+                        borderLeft: "3px solid #3498db",
+                        paddingLeft: "10px",
+                        marginTop: "5px"
+                      }}>
+                        <strong>Operating under:</strong> SHRI S P DESHMUKH EDUCATION FOUNDATION
+                      </p>
+                    </div>
                   </div>
 
                   <p
@@ -51,10 +65,11 @@ const AboutHomeFive = () => {
                     data-wow-delay=".5s"
                     style={{ fontSize: "15px" }}
                   >
-                   Sahyadri World School has been shaping young minds for 23 years with care,
-                    knowledge, and inspiration, empowering every student to dream big and achieve greatness.
-                     We are committed to nurturing confident, compassionate, 
-                   and future-ready individuals who will lead with wisdom and integrity.
+                    Sahyadri World School, operating under the esteemed <strong>SHRI S P DESHMUKH EDUCATION FOUNDATION</strong>, 
+                    has been shaping young minds for 23 years with care, knowledge, and inspiration, 
+                    empowering every student to dream big and achieve greatness.
+                    We are committed to nurturing confident, compassionate, 
+                    and future-ready individuals who will lead with wisdom and integrity.
                   </p>
 
                   {/* Progress Bars */}
@@ -66,7 +81,7 @@ const AboutHomeFive = () => {
                       <div className="circle-bar">
                         <CircularProgressbar
                           value={percentage}
-                          text={`${percentage}%`}
+                          text={⁠ ${percentage}% ⁠}
                         />
                       </div>
                       <div className="content">
@@ -83,7 +98,7 @@ const AboutHomeFive = () => {
                       <div className="circle-bar">
                         <CircularProgressbar
                           value={percentage2}
-                          text={`${percentage2}%`}
+                          text={⁠ ${percentage2}% ⁠}
                         />
                       </div>
                       <div className="content">
@@ -113,6 +128,10 @@ const AboutHomeFive = () => {
                           <i className="fas fa-check-circle"></i>
                           Performing Arts & Music Studio
                         </li>
+                        {/* <li>
+                          <i className="fas fa-check-circle"></i>
+                          Backed by <strong>SHRI S P DESHMUKH EDUCATION FOUNDATION</strong>
+                        </li> */}
                       </ul>
                     </div>
 
@@ -127,11 +146,15 @@ const AboutHomeFive = () => {
                         </li>
                         <li>
                           <i className="fas fa-check-circle"></i>
-                          Day Boarding (8 AM – 6 PM)
+                          Day Boarding (9 AM – 5 PM)
                         </li>
                         <li>
                           <i className="fas fa-check-circle"></i>
                           Healthy Meals & Safe Campus
+                        </li>
+                        <li>
+                          <i className="fas fa-check-circle"></i>
+                          23 Years of Educational Excellence
                         </li>
                       </ul>
                     </div>
@@ -155,6 +178,27 @@ const AboutHomeFive = () => {
                         Learn More
                       </Link>
                     </div>
+                    
+                    {/* Foundation Note at bottom */}
+                    <div
+                      className="foundation-footer mt-3 wow fadeInUp"
+                      data-wow-delay=".5s"
+                      style={{
+                        fontSize: "13px",
+                        color: "#7f8c8d",
+                        textAlign: "center",
+                        borderTop: "1px solid #eee",
+                        paddingTop: "15px",
+                        marginTop: "15px"
+                      }}
+                    >
+                      <p>
+                        <strong>Sahyadri World School</strong> is proudly operated under the 
+                        <strong> SHRI S P DESHMUKH EDUCATION FOUNDATION</strong>, 
+                        continuing a legacy of quality education since 2001.
+                      </p>
+                    </div>
+                    
                     {/* <div
                       className="author-image d-flex align-items-center gap-3 wow fadeInUp"
                       data-wow-delay=".5s"
