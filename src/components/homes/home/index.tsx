@@ -12,6 +12,7 @@ import TestimonialHomeFive from "../home-5/TestimonialHomeFive";
 import ChooseHomeOne from "./ChooseHomeOne";
 import TeamHomeOne from "./TeamHomeOne";
 import HomeComp6 from "./HomeComp6";
+import RecentActivities from "./RecentActivities";
 // import Boarding from "./Boarding";
 import BoardingAbout from "../../about/BoardingAbout";
 // import CardStack from "../../card/card";
@@ -38,6 +39,7 @@ const HomeOne = () => {
         <TeamHomeOne />
         <BoardingAbout />
         {/* <Boarding/> */}
+      <RecentActivities />
       <TestimonialHomeFive />
       <HomeComp6 />
       <FaqHomeThree />
