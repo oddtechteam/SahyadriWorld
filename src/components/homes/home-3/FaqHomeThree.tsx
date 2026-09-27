@@ -9,7 +9,7 @@ const FaqHomeThree = () => {
               <div className="col-lg-6">
                 <div className="faq-content">
                   <div className="section-title color-blue">
-                    <h3 className="wow fadeInUp">Asked Questions</h3>
+                    <h3 className="wow fadeInUp">Have Questions?</h3>
                     <h2 className="wow fadeInUp" data-wow-delay=".3s">
                       Frequently Asked <br /> Questions
                     </h2>

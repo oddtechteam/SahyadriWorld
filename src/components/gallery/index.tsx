@@ -7,6 +7,7 @@ import ScrollTop from "../../common/ScrollTop";
 import FooterTwo from "../../layouts/footers/FooterTwo";
 import HeaderOne from "../../layouts/headers/HeaderOne";
 import GalleryArea from "./GalleryArea";
+import VideoGallery from "./VideoGallery";
 
  
 
@@ -17,6 +18,7 @@ const Gallery = () => {
 			<HeaderOne />
 			<BreadcrumbEvent title="Gallery" subtitle="Gallery" />
 			<GalleryArea />
+			<VideoGallery />
 			<MarqueeOne />
 			<FooterTwo />
 			<ScrollTop />

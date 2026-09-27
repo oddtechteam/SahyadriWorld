@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./OurSchools.css";
 
@@ -9,6 +10,7 @@ const OurSchools = () => {
         <video
           className="position-absolute top-0 start-0 w-100 h-100 object-fit-cover"
           src="assets/img/hero/m1.mp4"
+          poster="/assets/img/about/abtm.webp"
           autoPlay
           loop
           muted
@@ -20,6 +22,11 @@ const OurSchools = () => {
 
         {/* Text Overlay */}
         <div className="overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center text-center px-3">
+          <span className="hero-badge fadeInDown">
+            <span className="hero-badge-dot"></span>
+            Admissions Open 2026–27
+          </span>
+
           <h1 className="display-4 fw-bold text-white mb-3 fadeInDown">
             Sahyadri World School
           </h1>
@@ -37,13 +44,21 @@ const OurSchools = () => {
             style={{ width: "100px", height: "4px" }}
           ></div>
 
-        <button
-  className="admission-btn glow-btn px-5 py-3 fw-bold rounded-pill mt-4"
-  onClick={() => (window.location.href = "/register")}
->
-  Admissions Open Now
-</button>
-
+          <div className="d-flex flex-wrap justify-content-center gap-3 mt-4">
+            <button
+              className="admission-btn glow-btn px-5 py-3 fw-bold rounded-pill"
+              onClick={() => (window.location.href = "/register")}
+            >
+              Admissions Open Now
+            </button>
+            {/* Switch to "/Enquire-Now" once that page is live */}
+            <Link
+              to="/contact"
+              className="hero-visit-btn px-5 py-3 fw-bold rounded-pill"
+            >
+              Book a Campus Visit
+            </Link>
+          </div>
         </div>
       </div>
     </section>
@@ -51,10 +66,6 @@ const OurSchools = () => {
 };
 
 export default OurSchools;
-
-
-
-
 
 // import { useState } from "react";
 // import { Link } from "react-router-dom";
@@ -165,8 +176,6 @@ export default OurSchools;
 // };
 
 // export default HeroHomeTwo;
-
-
 
 // import "bootstrap/dist/css/bootstrap.min.css";
 // import "./OurSchools.css";

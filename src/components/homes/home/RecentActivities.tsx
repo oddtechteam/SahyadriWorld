@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import "./RecentActivities.css";
 
 const img = (folder: string, file: string) =>
   encodeURI(`/assets/img/gallery/${folder}/WhatsApp Image ${file}.jpeg`);
@@ -6,6 +8,8 @@ const img = (folder: string, file: string) =>
 const activities = [
   {
     title: "Dentist Visit",
+    tag: "Health",
+    accent: "#e5484d",
     text: "A dental check-up camp where our students learned how to keep their teeth healthy.",
     images: [
       img("dentist visit", "2026-09-22 at 18.56.49"),
@@ -16,6 +20,8 @@ const activities = [
   },
   {
     title: "Culinary Activity",
+    tag: "Life Skills",
+    accent: "#f7941d",
     text: "Students prepared healthy snacks together and discovered the joy of cooking.",
     images: [
       img("culinary", "2026-09-22 at 19.01.15"),
@@ -27,6 +33,8 @@ const activities = [
   },
   {
     title: "Independence Day",
+    tag: "Celebration",
+    accent: "#0057b8",
     text: "Our students celebrated Independence Day with performances full of pride and patriotism.",
     images: [
       img("independence day", "2026-09-23 at 15.22.07 (1)"),
@@ -40,6 +48,8 @@ const activities = [
   },
   {
     title: "Meditation",
+    tag: "Wellness",
+    accent: "#16a34a",
     text: "Mindfulness and meditation sessions that help children build calm and focus.",
     images: [
       img("Meditation", "2026-09-22 at 18.57.31 (5)"),
@@ -52,6 +62,8 @@ const activities = [
   },
   {
     title: "Temple Visit",
+    tag: "Culture",
+    accent: "#9b4dca",
     text: "Students, teachers and parents visited a temple together to learn about our culture and traditions.",
     images: [
       img("temple visit", "2026-09-22 at 18.58.47 (1)"),
@@ -64,24 +76,11 @@ const activities = [
   },
 ];
 
-const navButton: React.CSSProperties = {
-  position: "absolute",
-  top: "50%",
-  transform: "translateY(-50%)",
-  width: "48px",
-  height: "48px",
-  borderRadius: "50%",
-  border: "none",
-  background: "rgba(255, 255, 255, 0.9)",
-  color: "#003366",
-  fontSize: "18px",
-  cursor: "pointer",
-};
-
 const RecentActivities = () => {
   const [open, setOpen] = useState<{ activity: number; photo: number } | null>(
     null
   );
+  const touchX = useRef<number | null>(null);
 
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback((dir: number) => {
@@ -111,97 +110,69 @@ const RecentActivities = () => {
 
   return (
     <>
-      <section
-        className="recent-activities-section fix section-padding"
-        style={{ backgroundColor: "#fff" }}
-      >
+      <section className="ra-section">
         <div className="container">
-          {/* Section Title */}
-          <div className="section-title text-center mb-5">
-            <h6 className="wow fadeInUp" style={{ color: "#003366" }}>
-              Life at Sahyadri
-            </h6>
-            <h3
-              className="wow fadeInUp fw-bold"
-              data-wow-delay=".3s"
-              style={{ color: "#003366" }}
-            >
-              Recent Activities
-            </h3>
+          <div className="ra-head">
+            <div>
+              <span className="ra-eyebrow">
+                <span className="ra-live"></span>
+                Life at Sahyadri
+              </span>
+              <h2 className="ra-title">
+                Recent <span>Activities</span>
+              </h2>
+              <p className="ra-subtitle">
+                A glimpse of what our students have been learning and
+                celebrating.
+              </p>
+            </div>
+            <Link to="/gallery" className="ra-all">
+              View Full Gallery <i className="fas fa-arrow-right"></i>
+            </Link>
           </div>
 
-          <div className="row g-4 justify-content-center">
+          <div className="ra-grid">
             {activities.map((activity, index) => (
-              <div className="col-lg-4 col-md-6" key={activity.title}>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setOpen({ activity: index, photo: 0 })}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") setOpen({ activity: index, photo: 0 });
-                  }}
-                  style={{
-                    background: "#fff",
-                    border: "2px solid #e0e9ff",
-                    borderRadius: "16px",
-                    overflow: "hidden",
-                    height: "100%",
-                    cursor: "pointer",
-                  }}
-                >
-                  <div style={{ position: "relative" }}>
-                    <img
-                      src={activity.images[0]}
-                      alt={activity.title}
-                      loading="lazy"
-                      style={{
-                        width: "100%",
-                        height: "240px",
-                        objectFit: "cover",
-                        display: "block",
-                      }}
-                    />
-                    <span
-                      style={{
-                        position: "absolute",
-                        bottom: "12px",
-                        right: "12px",
-                        background: "rgba(0, 51, 102, 0.85)",
-                        color: "#fff",
-                        fontSize: "13px",
-                        padding: "4px 12px",
-                        borderRadius: "20px",
-                      }}
-                    >
-                      <i className="fas fa-images" style={{ marginRight: "6px" }}></i>
-                      {activity.images.length} Photos
-                    </span>
-                  </div>
-                  <div style={{ padding: "22px 25px" }}>
-                    <h4
-                      style={{
-                        color: "#0057b8",
-                        fontWeight: "700",
-                        fontSize: "20px",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      {activity.title}
-                    </h4>
-                    <p
-                      style={{
-                        color: "#444",
-                        fontSize: "15px",
-                        lineHeight: "1.6",
-                        marginBottom: "12px",
-                      }}
-                    >
-                      {activity.text}
-                    </p>
-                    <span
-                      style={{ color: "#0057b8", fontWeight: "600", fontSize: "14px" }}
-                    >
-                      View Photos →
+              <div
+                key={activity.title}
+                className="ra-card wow fadeInUp"
+                data-wow-delay={`${0.1 * index}s`}
+                role="button"
+                tabIndex={0}
+                aria-label={`View ${activity.title} photos`}
+                style={{ "--ra-accent": activity.accent } as React.CSSProperties}
+                onClick={() => setOpen({ activity: index, photo: 0 })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") setOpen({ activity: index, photo: 0 });
+                }}
+              >
+                <img
+                  className="ra-cover"
+                  src={activity.images[0]}
+                  alt={activity.title}
+                  loading="lazy"
+                />
+                <div className="ra-shade"></div>
+
+                <span className="ra-tag">{activity.tag}</span>
+                <span className="ra-count">
+                  <i className="fas fa-images"></i> {activity.images.length}
+                </span>
+
+                <div className="ra-body">
+                  <h4>{activity.title}</h4>
+                  <p>{activity.text}</p>
+                  <div className="ra-extra">
+                    <div className="ra-thumbs">
+                      {activity.images.slice(1, 4).map((src) => (
+                        <img key={src} src={src} alt="" loading="lazy" />
+                      ))}
+                    </div>
+                    <span className="ra-view">
+                      View Photos
+                      <span className="ra-view-icon">
+                        <i className="fas fa-arrow-right"></i>
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -213,78 +184,72 @@ const RecentActivities = () => {
 
       {/* Photo viewer */}
       {open && current && (
-        <div
-          onClick={close}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0, 0, 0, 0.9)",
-            zIndex: 9999,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-          }}
-        >
-          <button
-            onClick={close}
-            aria-label="Close"
-            style={{
-              position: "absolute",
-              top: "15px",
-              right: "20px",
-              background: "none",
-              border: "none",
-              color: "#fff",
-              fontSize: "36px",
-              cursor: "pointer",
-              lineHeight: 1,
-            }}
-          >
-            ×
-          </button>
+        <div className="ra-viewer" onClick={close}>
+          <div className="ra-viewer-top" onClick={(e) => e.stopPropagation()}>
+            <div>
+              <h5>{current.title}</h5>
+              <small>
+                Photo {open.photo + 1} of {current.images.length}
+              </small>
+            </div>
+            <button className="ra-close" onClick={close} aria-label="Close">
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
 
           <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              position: "relative",
-              maxWidth: "1000px",
-              width: "100%",
-              textAlign: "center",
+            className="ra-stage"
+            onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+            onTouchEnd={(e) => {
+              if (touchX.current === null) return;
+              const dx = e.changedTouches[0].clientX - touchX.current;
+              if (Math.abs(dx) > 40) step(dx < 0 ? 1 : -1);
+              touchX.current = null;
             }}
           >
             <img
+              key={current.images[open.photo]}
               src={current.images[open.photo]}
               alt={`${current.title} ${open.photo + 1}`}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "78vh",
-                objectFit: "contain",
-                borderRadius: "8px",
-              }}
+              onClick={(e) => e.stopPropagation()}
             />
             {current.images.length > 1 && (
               <>
                 <button
-                  onClick={() => step(-1)}
+                  className="ra-nav prev"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    step(-1);
+                  }}
                   aria-label="Previous photo"
-                  style={{ ...navButton, left: "10px" }}
                 >
                   <i className="fas fa-chevron-left"></i>
                 </button>
                 <button
-                  onClick={() => step(1)}
+                  className="ra-nav next"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    step(1);
+                  }}
                   aria-label="Next photo"
-                  style={{ ...navButton, right: "10px" }}
                 >
                   <i className="fas fa-chevron-right"></i>
                 </button>
               </>
             )}
-            <p style={{ color: "#fff", marginTop: "15px", marginBottom: 0 }}>
-              {current.title} — {open.photo + 1} / {current.images.length}
-            </p>
+          </div>
+
+          <div className="ra-strip" onClick={(e) => e.stopPropagation()}>
+            {current.images.map((src, i) => (
+              <button
+                key={src}
+                className={i === open.photo ? "active" : ""}
+                onClick={() => setOpen({ activity: open.activity, photo: i })}
+                aria-label={`Photo ${i + 1}`}
+              >
+                <img src={src} alt="" loading="lazy" />
+              </button>
+            ))}
           </div>
         </div>
       )}
